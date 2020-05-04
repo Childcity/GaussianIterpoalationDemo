@@ -19,8 +19,8 @@ Demonstrate four ways of Interpolation methods:
 ### Test this method on COVID19 Statistics
 Statisctics have taken from [here](https://pomber.github.io/covid19/timeseries.json")
 
-#### Total sick
+#### Cases over time
 ![](./docs/Covid19_TotalIlled.png)
 
-#### Total sick per day
+#### New cases over time
 ![](./docs/covid19_evryday.png)

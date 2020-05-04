@@ -124,7 +124,10 @@
     <Compile Include="Covid19Settings.Designer.cs">
       <DependentUpon>Covid19Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="CovidApi\CountryInfo.cs" />
     <Compile Include="CovidApi\CovidRequest.cs" />
+    <Compile Include="CovidApi\DayInfo.cs" />
+    <Compile Include="CovidApi\JsonConverterSettings.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

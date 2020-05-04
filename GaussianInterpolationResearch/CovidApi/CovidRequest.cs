@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -84,48 +81,5 @@ namespace GaussianInterpolationResearch.CovidApi {
 			}
 			return days;
 		}
-	}
-
-	public static class CountryInfo {
-		/*
-			{
-				"Afghanistan": [
-					{
-						"date": "2020-1-22",
-						"confirmed": 0,
-						"deaths": 0,
-						"recovered": 0
-					}
-				]
-			}
-		 */
-		public static CountryInfoDict FromJson(string json) => JsonConvert.DeserializeObject<CountryInfoDict>(json, JsonConverterSettings.Settings);
-		public static string ToJson(CountryInfoDict info, bool indented = false) => JsonConvert.SerializeObject(info, indented ? Formatting.Indented : Formatting.None, JsonConverterSettings.Settings);
-	}
-
-	public partial class DayInfo {
-		public DateTimeOffset date { get; set; }
-
-		public long confirmed { get; set; }
-
-		public long deaths { get; set; }
-
-		public long recovered { get; set; }
-	}
-
-	public partial class DayInfo {
-		public static List<DayInfo> FromJson(string json) => JsonConvert.DeserializeObject<List<DayInfo>>(json, JsonConverterSettings.Settings);
-		public string ToJson(bool indented = false) => JsonConvert.SerializeObject(this, indented ? Formatting.Indented : Formatting.None, JsonConverterSettings.Settings);
-	}
-
-	internal static class JsonConverterSettings {
-		public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings {
-			MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-			NullValueHandling = NullValueHandling.Ignore,
-			DateParseHandling = DateParseHandling.None,
-			Converters = {
-				new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-			},
-		};
 	}
 }

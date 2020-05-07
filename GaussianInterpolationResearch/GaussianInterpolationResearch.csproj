@@ -134,6 +134,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpolation\Methods\GaussianInterpolation.cs" />
+    <Compile Include="Interpolation\Methods\GaussianParametricInterpolation.cs" />
+    <Compile Include="Interpolation\IInterpolation.cs" />
+    <Compile Include="Interpolation\InterpolationBase.cs" />
+    <Compile Include="Interpolation\InterpolationException.cs" />
+    <Compile Include="Interpolation\Methods\LagrangeInterpolation.cs" />
     <Compile Include="Interpolation\SystemSolver\GaussJordanElimination.cs" />
     <Compile Include="Interpolation\SystemSolver\InfiniteSolutionException.cs" />
     <Compile Include="InputParamsReader.cs" />

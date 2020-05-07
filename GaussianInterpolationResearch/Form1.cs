@@ -1,13 +1,10 @@
-﻿using GaussianInterpolationResearch.CovidApi;
-using GaussianInterpolationResearch.TestFunctions;
+﻿using GaussianInterpolationResearch.TestFunctions;
 using Interpolation;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;

@@ -88,7 +88,6 @@ namespace GaussianInterpolationResearch {
 			}
 
 			dateTimePicker1.Value = startDate;
-			Console.WriteLine(delta);
 			numericUpDown1.Value = (delta - 1) / 3;
 		}
 	}

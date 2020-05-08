@@ -813,6 +813,14 @@ namespace GaussianInterpolationResearch {
 			return source.Task;
 		}
 
+		private void scoreLagrageLb_Click(object sender, EventArgs e)
+		{
+			Console.WriteLine(scoreLagrageLb.Text);
+			Console.WriteLine(scoreGausLb.Text);
+			Console.WriteLine(scoreParamNormLb.Text);
+			Console.WriteLine(scoreParamSummLb.Text);
+		}
+
 		private (GaussianInterpolation gaussIntrpl, GaussianParametricInterpolation gaussParametricIntrpl, GaussianParametricInterpolation gaussSummaryIntrpl)
 			intrplHelper(InterpolationBase[] interpolationArray)
 			=> ((GaussianInterpolation)interpolationArray[1], (GaussianParametricInterpolation)interpolationArray[2], (GaussianParametricInterpolation)interpolationArray[3]);

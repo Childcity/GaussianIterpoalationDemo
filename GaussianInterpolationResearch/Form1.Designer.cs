@@ -36,6 +36,10 @@
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.methodChooser = new System.Windows.Forms.CheckedListBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.stepGb = new System.Windows.Forms.GroupBox();
+			this.stepTb = new System.Windows.Forms.TextBox();
+			this.stepFixedMode = new System.Windows.Forms.RadioButton();
+			this.stepAutoMode = new System.Windows.Forms.RadioButton();
 			this.covid19Mode = new System.Windows.Forms.RadioButton();
 			this.standartFunctionMode = new System.Windows.Forms.RadioButton();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -61,19 +65,15 @@
 			this.alphaNonParametricTrBar = new System.Windows.Forms.TrackBar();
 			this.alphaNonParametricTb = new System.Windows.Forms.TextBox();
 			this.progressBar1 = new System.Windows.Forms.ProgressBar();
-			this.stepGb = new System.Windows.Forms.GroupBox();
-			this.stepAutoMode = new System.Windows.Forms.RadioButton();
-			this.stepFixedMode = new System.Windows.Forms.RadioButton();
-			this.stepTb = new System.Windows.Forms.TextBox();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.stepGb.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.alphaSummaryTrBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.alphaParametricTrBar)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.alphaNonParametricTrBar)).BeginInit();
-			this.stepGb.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// zedGraph
@@ -171,6 +171,50 @@
 			this.groupBox3.Text = "Program Mode";
 			this.groupBox3.UseCompatibleTextRendering = true;
 			// 
+			// stepGb
+			// 
+			this.stepGb.Controls.Add(this.stepTb);
+			this.stepGb.Controls.Add(this.stepFixedMode);
+			this.stepGb.Controls.Add(this.stepAutoMode);
+			this.stepGb.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold);
+			this.stepGb.Location = new System.Drawing.Point(32, 64);
+			this.stepGb.Name = "stepGb";
+			this.stepGb.Size = new System.Drawing.Size(209, 78);
+			this.stepGb.TabIndex = 1;
+			this.stepGb.TabStop = false;
+			this.stepGb.Text = "Step";
+			// 
+			// stepTb
+			// 
+			this.stepTb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+			this.stepTb.Location = new System.Drawing.Point(145, 46);
+			this.stepTb.Name = "stepTb";
+			this.stepTb.Size = new System.Drawing.Size(58, 26);
+			this.stepTb.TabIndex = 2;
+			this.stepTb.Text = "0.2";
+			// 
+			// stepFixedMode
+			// 
+			this.stepFixedMode.AutoSize = true;
+			this.stepFixedMode.Location = new System.Drawing.Point(12, 49);
+			this.stepFixedMode.Name = "stepFixedMode";
+			this.stepFixedMode.Size = new System.Drawing.Size(67, 21);
+			this.stepFixedMode.TabIndex = 1;
+			this.stepFixedMode.Text = "Fixed";
+			this.stepFixedMode.UseVisualStyleBackColor = true;
+			// 
+			// stepAutoMode
+			// 
+			this.stepAutoMode.AutoSize = true;
+			this.stepAutoMode.Checked = true;
+			this.stepAutoMode.Location = new System.Drawing.Point(12, 22);
+			this.stepAutoMode.Name = "stepAutoMode";
+			this.stepAutoMode.Size = new System.Drawing.Size(104, 21);
+			this.stepAutoMode.TabIndex = 0;
+			this.stepAutoMode.TabStop = true;
+			this.stepAutoMode.Text = "Increasing";
+			this.stepAutoMode.UseVisualStyleBackColor = true;
+			// 
 			// covid19Mode
 			// 
 			this.covid19Mode.AutoSize = true;
@@ -202,13 +246,13 @@
 			// groupBox2
 			// 
 			this.groupBox2.BackColor = System.Drawing.SystemColors.Control;
+			this.groupBox2.Controls.Add(this.scoreParamNormLb);
+			this.groupBox2.Controls.Add(this.scoreGausLb);
+			this.groupBox2.Controls.Add(this.scoreParamSummLb);
+			this.groupBox2.Controls.Add(this.scoreLagrageLb);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.button1);
-			this.groupBox2.Controls.Add(this.scoreLagrageLb);
-			this.groupBox2.Controls.Add(this.scoreGausLb);
 			this.groupBox2.Controls.Add(this.exportToWordCB);
-			this.groupBox2.Controls.Add(this.scoreParamNormLb);
-			this.groupBox2.Controls.Add(this.scoreParamSummLb);
 			this.groupBox2.Controls.Add(this.checkBox1);
 			this.groupBox2.Controls.Add(this.autoReportChBx);
 			this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -254,6 +298,7 @@
 			this.scoreLagrageLb.Text = "0.0";
 			this.scoreLagrageLb.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.scoreLagrageLb.UseCompatibleTextRendering = true;
+			this.scoreLagrageLb.Click += new System.EventHandler(this.scoreLagrageLb_Click);
 			// 
 			// scoreGausLb
 			// 
@@ -470,50 +515,6 @@
 			this.progressBar1.Value = 20;
 			this.progressBar1.Visible = false;
 			// 
-			// stepGb
-			// 
-			this.stepGb.Controls.Add(this.stepTb);
-			this.stepGb.Controls.Add(this.stepFixedMode);
-			this.stepGb.Controls.Add(this.stepAutoMode);
-			this.stepGb.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold);
-			this.stepGb.Location = new System.Drawing.Point(32, 64);
-			this.stepGb.Name = "stepGb";
-			this.stepGb.Size = new System.Drawing.Size(209, 78);
-			this.stepGb.TabIndex = 1;
-			this.stepGb.TabStop = false;
-			this.stepGb.Text = "Step";
-			// 
-			// stepAutoMode
-			// 
-			this.stepAutoMode.AutoSize = true;
-			this.stepAutoMode.Checked = true;
-			this.stepAutoMode.Location = new System.Drawing.Point(12, 22);
-			this.stepAutoMode.Name = "stepAutoMode";
-			this.stepAutoMode.Size = new System.Drawing.Size(104, 21);
-			this.stepAutoMode.TabIndex = 0;
-			this.stepAutoMode.TabStop = true;
-			this.stepAutoMode.Text = "Increasing";
-			this.stepAutoMode.UseVisualStyleBackColor = true;
-			// 
-			// stepFixedMode
-			// 
-			this.stepFixedMode.AutoSize = true;
-			this.stepFixedMode.Location = new System.Drawing.Point(12, 49);
-			this.stepFixedMode.Name = "stepFixedMode";
-			this.stepFixedMode.Size = new System.Drawing.Size(67, 21);
-			this.stepFixedMode.TabIndex = 1;
-			this.stepFixedMode.Text = "Fixed";
-			this.stepFixedMode.UseVisualStyleBackColor = true;
-			// 
-			// stepTb
-			// 
-			this.stepTb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-			this.stepTb.Location = new System.Drawing.Point(145, 46);
-			this.stepTb.Name = "stepTb";
-			this.stepTb.Size = new System.Drawing.Size(58, 26);
-			this.stepTb.TabIndex = 2;
-			this.stepTb.Text = "0.2";
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -529,14 +530,14 @@
 			this.panel1.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.stepGb.ResumeLayout(false);
+			this.stepGb.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.groupBox1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.alphaSummaryTrBar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.alphaParametricTrBar)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.alphaNonParametricTrBar)).EndInit();
-			this.stepGb.ResumeLayout(false);
-			this.stepGb.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

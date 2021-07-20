@@ -74,12 +74,12 @@ namespace GaussianInterpolationResearch {
 
 			standartFunctionMode.CheckedChanged += (object s, EventArgs e) => modeChanged();
 
-			alphaNonParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChenged(alphaNonParametricTrBar, alphaNonParametricTb);
-			alphaNonParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChenged(alphaNonParametricTrBar, alphaNonParametricTb);
-			alphaParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChenged(alphaParametricTrBar, alphaParametricTb);
-			alphaParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChenged(alphaParametricTrBar, alphaParametricTb);
-			alphaSummaryTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChenged(alphaSummaryTrBar, alphaSummaryTb);
-			alphaSummaryTb.TextChanged += (object s, EventArgs e) => alphaTextChenged(alphaSummaryTrBar, alphaSummaryTb);
+			alphaNonParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChanged(alphaNonParametricTrBar, alphaNonParametricTb);
+			alphaNonParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChanged(alphaNonParametricTrBar, alphaNonParametricTb);
+			alphaParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChanged(alphaParametricTrBar, alphaParametricTb);
+			alphaParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChanged(alphaParametricTrBar, alphaParametricTb);
+			alphaSummaryTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChanged(alphaSummaryTrBar, alphaSummaryTb);
+			alphaSummaryTb.TextChanged += (object s, EventArgs e) => alphaTextChanged(alphaSummaryTrBar, alphaSummaryTb);
 
 			zedGraph.SizeChanged += onSizeChanged;
 			zedGraph.ZoomEvent += onSizeChanged;
@@ -93,8 +93,8 @@ namespace GaussianInterpolationResearch {
 		}
 
 		bool skipEvent = false;
-		private void alphaTrBarChenged(TrackBar trackBar, TextBox textBox) { if (!skipEvent) textBox.Text = (trackBar.Value / alphaStep).ToDoubString(); }
-		private void alphaTextChenged(TrackBar trackBar, TextBox textBox)
+		private void alphaTrBarChanged(TrackBar trackBar, TextBox textBox) { if (!skipEvent) textBox.Text = (trackBar.Value / alphaStep).ToDoubString(); }
+		private void alphaTextChanged(TrackBar trackBar, TextBox textBox)
 		{
 			try {
 				int newVal = (int)(double.Parse(textBox.Text) * alphaStep);

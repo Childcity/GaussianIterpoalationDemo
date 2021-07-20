@@ -831,10 +831,3 @@ namespace GaussianInterpolationResearch {
 		public static string ToDoubString(this double num) => num.ToString("F18");//.TrimEnd(new char[] { '0' });
 	}
 }
-
-/*
-+ 1. Добавить возможность выбора постоянный или шага с прирощением
-+ 2. Для Ковида посчитать погрешность
-+ 3. Если не работает интернет, базу с файла выбирать
-4. Описать возможность выбора данных из интернета в записке
-*/

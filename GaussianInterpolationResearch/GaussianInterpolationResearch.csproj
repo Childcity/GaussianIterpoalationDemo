@@ -46,6 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,6 +57,7 @@
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -134,19 +136,21 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interpolation\Methods\GaussianInterpolation.cs" />
-    <Compile Include="Interpolation\Methods\GaussianParametricInterpolation.cs" />
-    <Compile Include="Interpolation\IInterpolation.cs" />
-    <Compile Include="Interpolation\InterpolationBase.cs" />
-    <Compile Include="Interpolation\InterpolationException.cs" />
-    <Compile Include="Interpolation\Methods\LagrangeInterpolation.cs" />
-    <Compile Include="Interpolation\SystemSolver\GaussJordanElimination.cs" />
-    <Compile Include="Interpolation\SystemSolver\InfiniteSolutionException.cs" />
-    <Compile Include="Interpolation\Interpolation.cs" />
-    <Compile Include="Interpolation\SystemSolver\NoSolutionException.cs" />
+    <Compile Include="InterpolationBuilders\SimpleFunctionInterpolation.cs" />
+    <Compile Include="InterpolationMethods\Methods\GaussianInterpolation.cs" />
+    <Compile Include="InterpolationMethods\Methods\GaussianParametricInterpolation.cs" />
+    <Compile Include="InterpolationMethods\IInterpolation.cs" />
+    <Compile Include="InterpolationMethods\InterpolationBase.cs" />
+    <Compile Include="InterpolationMethods\InterpolationException.cs" />
+    <Compile Include="InterpolationMethods\Methods\LagrangeInterpolation.cs" />
+    <Compile Include="InterpolationMethods\SystemSolver\GaussJordanElimination.cs" />
+    <Compile Include="InterpolationMethods\SystemSolver\InfiniteSolutionException.cs" />
+    <Compile Include="InterpolationMethods\Interpolation.cs" />
+    <Compile Include="InterpolationMethods\SystemSolver\NoSolutionException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestFunctions\TestFunctionBase.cs" />
+    <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Covid19Settings.resx">
       <DependentUpon>Covid19Settings.cs</DependentUpon>
     </EmbeddedResource>
@@ -219,8 +223,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

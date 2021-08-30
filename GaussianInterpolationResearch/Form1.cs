@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZedGraph;
+using static GaussianInterpolationResearch.Utils;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace GaussianInterpolationResearch {
@@ -377,7 +378,8 @@ namespace GaussianInterpolationResearch {
 				} else { 
 					basisPoints.Add(testFunction.GetValue(x));
 				}
-				wl($"t={x}, {(isX ? "x" : "y")}={basisPoints.Last()}");
+
+				Log($"t={x}, {(isX ? "x" : "y")}={basisPoints.Last()}");
 
 				if (double.IsNaN(basisPoints.Last().Y) || double.IsInfinity(basisPoints.Last().Y)) {
 					throw new ArgumentException($"XMin == {testFunction.XMin} correctXMax == {correctXMax}\n" +
@@ -394,13 +396,14 @@ namespace GaussianInterpolationResearch {
 					// here we should put middle points
 					double delta = (nextX - x) / (pointsBetweenBasisNumber + 1);
 					for (int pbi = 1; pbi <= pointsBetweenBasisNumber; pbi++) { // pbi means Point Between Bassis Iter
-						double middle = pbi * delta;
-
+						double middle = curPoint.X + pbi * delta;
+						Log($"x {x} curPoint.X {curPoint.X}");
 						if (paramTestFunc != null) {
-							middle += x; // x means t
-							correctFuncValue.Add(paramTestFunc.GetValue(middle));
+							//middle += x; // x means t
+							//correctFuncValue.Add(paramTestFunc.GetValue(middle));
+							correctFuncValue.Add(new PointPair(middle, isX ? paramTestFunc.GetValue(middle).X : paramTestFunc.GetValue(middle).Y));
 						} else {
-							middle += curPoint.X;
+							//middle += curPoint.X;
 							correctFuncValue.Add(testFunction.GetValue(middle));
 						}
 					}
@@ -820,10 +823,5 @@ namespace GaussianInterpolationResearch {
 			intrplHelper(InterpolationBase[] interpolationArray)
 			=> ((GaussianInterpolation)interpolationArray[1], (GaussianParametricInterpolation)interpolationArray[2], (GaussianParametricInterpolation)interpolationArray[3]);
 
-		private void wl<T>(T value) => Console.WriteLine(value);
-	}
-
-	public static class Extension {
-		public static string ToDoubString(this double num) => num.ToString("F18");//.TrimEnd(new char[] { '0' });
 	}
 }

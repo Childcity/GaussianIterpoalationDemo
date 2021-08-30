@@ -13,28 +13,8 @@ using Word = Microsoft.Office.Interop.Word;
 
 namespace GaussianInterpolationResearch {
 	public partial class Form1 : Form {
-		/*
-				x^2
-				1/x
-				Sqrt x
-				Sqrt3 x
-				log x
-				Exp x
-				1.3^x
-
-				Sin x
-				Arcsin x
-				Arctan x
-
-				sinh x
-				arsinh x 
-				csch x 
-
-				sech x
-				arsech x
-			*/
-
 		public TestFunctionBase[] testFunctions = new TestFunctionBase[] {
+			new ArchimedeanSpiral(),
 			new XInPower2(), new OneByX(), new SqrtX(), new Sqrt3X(),
 			new NaturalLogarithmX(), new Exp0_2X(), new _1_3PowerX(),
 			new SinX(), new ArcSinX(), new ArcTgX(),
@@ -74,17 +54,17 @@ namespace GaussianInterpolationResearch {
 
 			standartFunctionMode.CheckedChanged += (object s, EventArgs e) => modeChanged();
 
-			alphaNonParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChenged(alphaNonParametricTrBar, alphaNonParametricTb);
-			alphaNonParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChenged(alphaNonParametricTrBar, alphaNonParametricTb);
-			alphaParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChenged(alphaParametricTrBar, alphaParametricTb);
-			alphaParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChenged(alphaParametricTrBar, alphaParametricTb);
-			alphaSummaryTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChenged(alphaSummaryTrBar, alphaSummaryTb);
-			alphaSummaryTb.TextChanged += (object s, EventArgs e) => alphaTextChenged(alphaSummaryTrBar, alphaSummaryTb);
+			alphaNonParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChanged(alphaNonParametricTrBar, alphaNonParametricTb);
+			alphaNonParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChanged(alphaNonParametricTrBar, alphaNonParametricTb);
+			alphaParametricTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChanged(alphaParametricTrBar, alphaParametricTb);
+			alphaParametricTb.TextChanged += (object s, EventArgs e) => alphaTextChanged(alphaParametricTrBar, alphaParametricTb);
+			alphaSummaryTrBar.ValueChanged += (object s, EventArgs e) => alphaTrBarChanged(alphaSummaryTrBar, alphaSummaryTb);
+			alphaSummaryTb.TextChanged += (object s, EventArgs e) => alphaTextChanged(alphaSummaryTrBar, alphaSummaryTb);
 
 			zedGraph.SizeChanged += onSizeChanged;
 			zedGraph.ZoomEvent += onSizeChanged;
 			for (int i = 0; i < methodChooser.Items.Count; i++)
-				methodChooser.SetItemChecked(i, true);
+				methodChooser.SetItemChecked(i, i == 0 ? true : false);
 			methodChooser.ItemCheck += (object sender, ItemCheckEventArgs e) => updateShowingMethod(e);
 
 			settingGraphic();
@@ -93,8 +73,8 @@ namespace GaussianInterpolationResearch {
 		}
 
 		bool skipEvent = false;
-		private void alphaTrBarChenged(TrackBar trackBar, TextBox textBox) { if (!skipEvent) textBox.Text = (trackBar.Value / alphaStep).ToDoubString(); }
-		private void alphaTextChenged(TrackBar trackBar, TextBox textBox)
+		private void alphaTrBarChanged(TrackBar trackBar, TextBox textBox) { if (!skipEvent) textBox.Text = (trackBar.Value / alphaStep).ToDoubString(); }
+		private void alphaTextChanged(TrackBar trackBar, TextBox textBox)
 		{
 			try {
 				int newVal = (int)(double.Parse(textBox.Text) * alphaStep);
@@ -309,10 +289,10 @@ namespace GaussianInterpolationResearch {
 			return methodDatas;
 		}
 
-		private (double[] deltaBetweenMethod, double methodMark) countAlgorithmScore(PointPairList correctFuncValue, PointPairList interpolatedPoints)
+		private (double[] distanceBetweenMethodPoints, double methodMark) countAlgorithmScore(PointPairList correctFuncValue, PointPairList interpolatedPoints)
 		{
 			// count delta between basis and interpolatedPoints
-			List<double> deltaBetweenMethod = new List<double>();
+			List<double> distanceBetweenMethodPoints = new List<double>();
 			double methodMark = 0;
 			int countOfDeltas = 0;
 
@@ -320,18 +300,20 @@ namespace GaussianInterpolationResearch {
 				if (i % 3 == 0) // We don't include basis
 					continue;
 
-				double delta = correctFuncValue[i].Y - interpolatedPoints[i].Y;
+				double delta = distance(correctFuncValue[i], interpolatedPoints[i]);
+				distanceBetweenMethodPoints.Add(delta);
+
 				delta *= delta; // delta^2
 				methodMark += delta;
-				deltaBetweenMethod.Add(delta);
 				countOfDeltas++;
 			}
-			methodMark /= countOfDeltas;
 
-			double yMax = correctFuncValue.YMax();
-			methodMark /= yMax * yMax; // normalize method mark 
+			methodMark /= countOfDeltas; // average delta
+			methodMark = Math.Sqrt(methodMark);
 
-			return (deltaBetweenMethod.ToArray(), methodMark);
+			return (distanceBetweenMethodPoints.ToArray(), methodMark);
+
+			double distance(PointPair p, PointPair r) => Math.Sqrt(Math.Pow(p.X - r.X, 2) + Math.Pow(p.Y - r.Y, 2));
 		}
 
 		private PointPairList doInterpolation(InterpolationBase intrplMethod, PointPairList basisPoints)
@@ -369,10 +351,11 @@ namespace GaussianInterpolationResearch {
 			return interpolatedPoints;
 		}
 
-		private (PointPairList basisPoints, PointPairList correctFuncValue) constructBasisAndCorrectFuncValues(TestFunctionBase testFunction)
+		private (PointPairList basisPoints, PointPairList correctFuncValue) constructBasisAndCorrectFuncValues(TestFunctionBase testFunction, bool isX = true)
 		{
 			PointPairList basisPoints = new PointPairList();
 			PointPairList correctFuncValue = new PointPairList();
+			ParametricTestFunction paramTestFunc = testFunction as ParametricTestFunction;
 
 			Func<int, double> getStepFunc = null;
 			if (stepFixedMode.Checked) {
@@ -389,7 +372,12 @@ namespace GaussianInterpolationResearch {
 			int currIter = 0;
 			double correctXMax = testFunction.XMax + 0.0001;
 			for (double x = testFunction.XMin; x < correctXMax; x += getStepFunc(currIter)) {
-				basisPoints.Add(new PointPair(x, testFunction.GetValue(x)));
+				if (paramTestFunc != null) {
+					basisPoints.Add(new PointPair(x, isX ? paramTestFunc.GetValue(x).X : paramTestFunc.GetValue(x).Y));
+				} else { 
+					basisPoints.Add(testFunction.GetValue(x));
+				}
+				wl($"t={x}, {(isX ? "x" : "y")}={basisPoints.Last()}");
 
 				if (double.IsNaN(basisPoints.Last().Y) || double.IsInfinity(basisPoints.Last().Y)) {
 					throw new ArgumentException($"XMin == {testFunction.XMin} correctXMax == {correctXMax}\n" +
@@ -406,8 +394,15 @@ namespace GaussianInterpolationResearch {
 					// here we should put middle points
 					double delta = (nextX - x) / (pointsBetweenBasisNumber + 1);
 					for (int pbi = 1; pbi <= pointsBetweenBasisNumber; pbi++) { // pbi means Point Between Bassis Iter
-						double xMiddle = curPoint.X + pbi * delta;
-						correctFuncValue.Add(new PointPair(xMiddle, testFunction.GetValue(xMiddle)));
+						double middle = pbi * delta;
+
+						if (paramTestFunc != null) {
+							middle += x; // x means t
+							correctFuncValue.Add(paramTestFunc.GetValue(middle));
+						} else {
+							middle += curPoint.X;
+							correctFuncValue.Add(testFunction.GetValue(middle));
+						}
 					}
 				}
 				currIter++;
@@ -825,6 +820,7 @@ namespace GaussianInterpolationResearch {
 			intrplHelper(InterpolationBase[] interpolationArray)
 			=> ((GaussianInterpolation)interpolationArray[1], (GaussianParametricInterpolation)interpolationArray[2], (GaussianParametricInterpolation)interpolationArray[3]);
 
+		private void wl<T>(T value) => Console.WriteLine(value);
 	}
 
 	public static class Extension {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Linq;
 using ZedGraph;
 
@@ -16,12 +17,18 @@ namespace Interpolation {
             YTArray = new PointPairList();
 
             if (type == ParametricType.Normal) {
+                CurveColor = Color.DeepSkyBlue;
+                Symbol = SymbolType.Circle;
+
                 for (int i = 0; i < inputPoints.Count; i++) {
                     XTArray.Add(new PointPair(i, inputPoints[i].X)); // fill Xt(t)
                     YTArray.Add(new PointPair(i, inputPoints[i].Y)); // fill Yt(t)
                 }
 
             } else if (type == ParametricType.Summary) {
+                CurveColor = Color.LawnGreen;
+                Symbol = SymbolType.XCross;
+
                 double previousT = 0;
                 XTArray.Add(new PointPair(previousT, inputPoints[0].X)); // fill Xt[0](t)
                 YTArray.Add(new PointPair(previousT, inputPoints[0].Y)); // fill Y[0](t)
@@ -41,6 +48,10 @@ namespace Interpolation {
         }
 
         public override string Name { get; protected set; } = "Gaussian Parametric ";
+
+        public override Color CurveColor { get; protected set; }
+
+        public override SymbolType Symbol { get; protected set; }
 
         public ParametricType Type { get; protected set; }
 

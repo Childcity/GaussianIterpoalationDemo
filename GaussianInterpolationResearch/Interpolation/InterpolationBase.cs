@@ -1,4 +1,5 @@
-﻿using ZedGraph;
+﻿using System.Drawing;
+using ZedGraph;
 
 namespace Interpolation {
 	public abstract class InterpolationBase : IInterpolation {
@@ -10,6 +11,10 @@ namespace Interpolation {
         public abstract PointPair GetPoint(double X);
 
         public abstract string Name { get; protected set; }
+
+        public abstract Color CurveColor { get; protected set; }
+
+        public abstract SymbolType Symbol { get; protected set; }
     }
 
 }

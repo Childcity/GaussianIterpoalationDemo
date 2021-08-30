@@ -188,7 +188,9 @@ namespace GaussianInterpolationResearch {
 					};
 
 				} catch (Exception ex) {
-					MessageBox.Show(ex.Message, testFunctions[funcIt].Name);
+					string funcName = "Unknown function";
+					try { funcName = testFunctions[funcIt].Name; } catch { }
+					MessageBox.Show(ex.Message, funcName);
 				} finally {
 					checkBox1.Checked = false;
 				}
@@ -263,7 +265,6 @@ namespace GaussianInterpolationResearch {
 			List<MethodData> methodDatas = new List<MethodData>();
 			GraphPane pane = zedGraph.GraphPane;
 
-			int symbol = 1;
 			foreach (InterpolationBase intrplMethod in interpolations) {
 				PointPairList interpolatedPoints = doInterpolation(intrplMethod, basisPoints);
 				MethodData methodData = new MethodData() {
@@ -273,11 +274,10 @@ namespace GaussianInterpolationResearch {
 
 				{
 					// add interpolation to graphic
-					LineItem myCurve = null;
-					myCurve = pane.AddCurve($"F(x) = {intrplMethod.Name}", interpolatedPoints, Color.Black, (SymbolType)symbol);
-					myCurve.Symbol.Size = 4;
-					myCurve.Symbol.Fill = new Fill(Color.FromKnownColor((KnownColor)(10 * symbol++)));
-					myCurve.Line.IsVisible = false;
+					LineItem myCurve = pane.AddCurve($"F(x) = {intrplMethod.Name}", interpolatedPoints, intrplMethod.CurveColor, intrplMethod.Symbol);
+					myCurve.Symbol.Size = 5;
+					myCurve.Symbol.Fill = new Fill(intrplMethod.CurveColor);
+					myCurve.Line.IsVisible = true;
 				}
 
 				if (correctFuncValue != null) {
@@ -294,12 +294,12 @@ namespace GaussianInterpolationResearch {
 				// add basis curve to graphic
 				title = testFunction == null ? "Covid-19 Statistics" : $"Interpolation for y = F({testFunction.Name})";
 				LineItem myCurve;
-				myCurve = pane.AddCurve($"y_basis = {(testFunction == null ? "" : testFunction.Name)}", basisPoints, Color.Red, SymbolType.TriangleDown);
+				myCurve = pane.AddCurve($"Main_basis = {(testFunction == null ? "" : testFunction.Name)}", basisPoints, Color.Red, SymbolType.TriangleDown);
 				myCurve.Symbol.Size = 7;
 				myCurve.Symbol.Fill = new Fill(Color.Red);
 				myCurve.Line.IsVisible = false;
 				if (correctFuncValue != null) {
-					myCurve = pane.AddCurve($"y_basis = {(testFunction == null ? "" : testFunction.Name)}", correctFuncValue, Color.Green, SymbolType.TriangleDown);
+					myCurve = pane.AddCurve($"Middle_basis = {(testFunction == null ? "" : testFunction.Name)}", correctFuncValue, Color.Green, SymbolType.TriangleDown);
 					myCurve.Symbol.Size = 3;
 					myCurve.Symbol.Fill = new Fill(Color.Green);
 					myCurve.Line.IsVisible = false;
@@ -831,10 +831,3 @@ namespace GaussianInterpolationResearch {
 		public static string ToDoubString(this double num) => num.ToString("F18");//.TrimEnd(new char[] { '0' });
 	}
 }
-
-/*
-+ 1. Добавить возможность выбора постоянный или шага с прирощением
-+ 2. Для Ковида посчитать погрешность
-+ 3. Если не работает интернет, базу с файла выбирать
-4. Описать возможность выбора данных из интернета в записке
-*/

@@ -1,4 +1,5 @@
-﻿using ZedGraph;
+﻿using System.Drawing;
+using ZedGraph;
 
 namespace Interpolation {
 	public class LagrangeInterpolation : InterpolationBase {
@@ -7,6 +8,10 @@ namespace Interpolation {
         { }
 
         public override string Name { get; protected set; } = "Lagrange";
+
+        public override Color CurveColor { get; protected set; } = Color.Violet;
+
+        public override SymbolType Symbol { get; protected set; } = SymbolType.Diamond;
 
         public override PointPair GetPoint(double X)
         {

@@ -1,6 +1,7 @@
 ﻿using SystemSolver;
 using System;
 using ZedGraph;
+using System.Drawing;
 
 namespace Interpolation {
 	public class GaussianInterpolation : InterpolationBase {
@@ -13,6 +14,10 @@ namespace Interpolation {
         }
 
         public override string Name { get; protected set; } = "Gaussian Non Parametric";
+
+        public override Color CurveColor { get; protected set; } = Color.MediumSlateBlue;
+
+        public override SymbolType Symbol { get; protected set; } = SymbolType.Square;
 
         public override PointPair GetPoint(double Xl)
         {

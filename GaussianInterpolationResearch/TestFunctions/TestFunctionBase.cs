@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ZedGraph;
 
 namespace GaussianInterpolationResearch.TestFunctions {
 	/*
+			ArchimedeanSpiral{ x = (a + bt) * cos(t),  y = (a + bt) * sin(t) }
 			x^2
 			1/x
 			Sqrt x
@@ -27,10 +25,11 @@ namespace GaussianInterpolationResearch.TestFunctions {
 
 	public abstract class TestFunctionBase {
 		private double miniStep;
-		public int pointsCount;
+		private int pointsCount;
 
 		protected TestFunctionBase() => PointsCount = 15;
 		public abstract string Name { get; protected set; }
+		public virtual string Subname { get; protected set; }
 		public virtual double XMin { get; protected set; } = 0.1;
 		public virtual double XMax { get; protected set; } = 10.1;
 		public virtual int PointsCount {
@@ -57,7 +56,7 @@ namespace GaussianInterpolationResearch.TestFunctions {
 			return currentStep;
 		}
 
-		public abstract double GetValue(double x);
+		public virtual PointPair GetValue(double x) => throw new NotImplementedException();
 		
 		private double countStep(double currentStepLengInPercent)
 		{
@@ -66,44 +65,64 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		}
 	}
 
+	public abstract class ParametricTestFunction : TestFunctionBase {
+		public override double XMin { get; protected set; } = 0;
+		public override double XMax { get; protected set; } = 2 * Math.PI;
+	}
+
+	public class ArchimedeanSpiral : ParametricTestFunction {
+		public override string Name { get; protected set; } = "(a + bt) * cos(t), (a + bt) * sin(t)";
+		public override string Subname { get; protected set; } = "Archimedean Spiral";
+		public override double XMin { get; protected set; } = 0;
+		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
+		public override PointPair GetValue(double t) => new PointPair(
+			x: (initSpiralRadius + spiralGowthRate * t) * Math.Cos(t), 
+			y: (initSpiralRadius + spiralGowthRate * t) * Math.Sin(t));
+
+		private static double initSpiralRadius = 0.1;
+		private static double finalSpiralRadius = 1;
+		private static double numOfTurns = 2;
+		private static double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
+	}
+
 	public class XInPower2 : TestFunctionBase {
 		public override string Name { get; protected set; } = "X^2";
-		public override double GetValue(double x) => x * x;
+		public override PointPair GetValue(double x) => new PointPair(x, x * x);
 	}
 
 	public class OneByX : TestFunctionBase {
 		public override string Name { get; protected set; } = "1/X";
-		public override double GetValue(double x) => 1 / x;
+		public override PointPair GetValue(double x) => new PointPair(x, 1 / x);
 	}
 
 	public class SqrtX : TestFunctionBase {
 		public override string Name { get; protected set; } = "√x";
-		public override double GetValue(double x) => Math.Sqrt(x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Sqrt(x));
 	}
 
 	public class Sqrt3X : TestFunctionBase {
 		public override string Name { get; protected set; } = "x^(1/3)";
-		public override double GetValue(double x) => Math.Pow(x, 1/3.0);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Pow(x, 1/3.0));
 	}
 
 	public class NaturalLogarithmX : TestFunctionBase {
 		public override string Name { get; protected set; } = "lg(x) == log_e(x)";
-		public override double GetValue(double x) => Math.Log(x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Log(x));
 	}
 
 	public class Exp0_2X : TestFunctionBase {
 		public override string Name { get; protected set; } = "e^0.2x";
-		public override double GetValue(double x) => Math.Exp(0.2 * x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Exp(0.2 * x));
 	}
 
 	public class _1_3PowerX : TestFunctionBase {
 		public override string Name { get; protected set; } = "1.3^x";
-		public override double GetValue(double x) => Math.Pow(1.3, x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Pow(1.3, x));
 	}
 
 	public class SinX : TestFunctionBase {
 		public override string Name { get; protected set; } = "sin(x)";
-		public override double GetValue(double x) => Math.Sin(x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Sin(x));
 	}
 
 	public class ArcSinX : TestFunctionBase {
@@ -111,12 +130,12 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		public override double XMin { get; protected set; } = -1;
 		public override double XMax { get; protected set; } = 1;
 		//public override double GetStep(int i) { return 0.4; } 
-		public override double GetValue(double x) => Math.Asin(x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Asin(x));
 	}
 
 	public class ArcTgX : TestFunctionBase {
 		public override string Name { get; protected set; } = "arctg(x)";
-		public override double GetValue(double x) => Math.Atan(x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Atan(x));
 	}
 
 	public class SinHX : TestFunctionBase {
@@ -124,22 +143,22 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		public override double XMin { get; protected set; } = -3;
 		public override double XMax { get; protected set; } = 3;
 		//public override double GetStep(int i) { return 0.9; } 
-		public override double GetValue(double x) => Math.Sinh(x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Sinh(x));
 	}
 
 	public class ArcSinHX : TestFunctionBase {
 		public override string Name { get; protected set; } = "arsinh(x)";
-		public override double GetValue(double x) => Math.Log(x + Math.Sqrt(x * x + 1));
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Log(x + Math.Sqrt(x * x + 1)));
 	}
 
 	public class CosecHX : TestFunctionBase {
 		public override string Name { get; protected set; } = "csch(x)";
-		public override double GetValue(double x) => 2 / (Math.Exp(x) - Math.Exp(-x));
+		public override PointPair GetValue(double x) => new PointPair(x, 2 / (Math.Exp(x) - Math.Exp(-x)));
 	}
 
 	public class SecHX : TestFunctionBase {
 		public override string Name { get; protected set; } = "sech(x)";
-		public override double GetValue(double x) => 2 / (Math.Exp(x) + Math.Exp(-x));
+		public override PointPair GetValue(double x) => new PointPair(x, 2 / (Math.Exp(x) + Math.Exp(-x)));
 	}
 
 	public class ArcSecHX : TestFunctionBase {
@@ -147,6 +166,6 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		public override double XMin { get; protected set; } = 0.1;
 		public override double XMax { get; protected set; } = 0.9;
 		//public override double GetStep(int i) { return 0.08; }
-		public override double GetValue(double x) => Math.Log((Math.Sqrt(-x * x + 1) + 1) / x);
+		public override PointPair GetValue(double x) => new PointPair(x, Math.Log((Math.Sqrt(-x * x + 1) + 1) / x));
 	}
 }

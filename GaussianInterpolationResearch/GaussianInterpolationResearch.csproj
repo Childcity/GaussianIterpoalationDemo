@@ -142,7 +142,6 @@
     <Compile Include="Interpolation\Methods\LagrangeInterpolation.cs" />
     <Compile Include="Interpolation\SystemSolver\GaussJordanElimination.cs" />
     <Compile Include="Interpolation\SystemSolver\InfiniteSolutionException.cs" />
-    <Compile Include="InputParamsReader.cs" />
     <Compile Include="Interpolation\Interpolation.cs" />
     <Compile Include="Interpolation\SystemSolver\NoSolutionException.cs" />
     <Compile Include="Program.cs" />
@@ -220,6 +219,8 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

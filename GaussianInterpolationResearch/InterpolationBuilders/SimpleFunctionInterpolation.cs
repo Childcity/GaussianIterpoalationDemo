@@ -3,14 +3,12 @@ using Interpolation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZedGraph;
-using static GaussianInterpolationResearch.Utils;
-using InterpolationMethods = System.Collections.Generic.Dictionary<Interpolation.Method, Interpolation.InterpolationBase>;
+using GaussianMethodAlpha = System.Collections.Generic.Dictionary<Interpolation.Method, double>;
 using InterpolatedPointsDict = System.Collections.Generic.Dictionary<Interpolation.Method, ZedGraph.PointPairList>;
+using InterpolationMethods = System.Collections.Generic.Dictionary<Interpolation.Method, Interpolation.InterpolationBase>;
 
-namespace GaussianInterpolationResearch.InterpolationBuilders
+namespace MethodsInterpolation
 {
 
 	public interface IInterpolationStep
@@ -20,11 +18,11 @@ namespace GaussianInterpolationResearch.InterpolationBuilders
 
 	public class FixedStep : IInterpolationStep
 	{
-		private readonly int step;
+		private readonly double step;
 
-		public FixedStep(int step) => this.step = step;
+		public FixedStep(double step) => this.step = step;
 
-		public double Get(int iter) => step;
+		public double Get(int _) => step;
 	}
 
 	public class IncreasingStep : IInterpolationStep
@@ -36,69 +34,103 @@ namespace GaussianInterpolationResearch.InterpolationBuilders
 		public double Get(int iter) => testFunction.GetStep(iter);
 	}
 
-	public interface I2DFunctionPoint
-	{
-		public abstract PointPair Get2DFunctionPoint(double argument);
-	}
 
-	public interface IFunctionInterpolation
+
+	public interface IDataInterpolation
 	{
+		public abstract GaussianMethodAlpha CustomGaussianAlpha { get; set; }
 		public abstract InterpolatedPointsDict BuildInterpolations();
 	}
 
-	public class SimpleFunctionInterpolation : IFunctionInterpolation
+	public abstract class FunctionInterpolation : IDataInterpolation
 	{
-		private readonly TestFunctionBase testFunction;
-		private readonly IInterpolationStep step;
+		protected readonly IInterpolationStep step;
 
-		private BasisAndCorrectFuncValues basisAndFuncValues;
-		private InterpolationMethods interpolationMethods;
-
-		public SimpleFunctionInterpolation(TestFunctionBase testFunc, IInterpolationStep intrplStep, Func<double, PointPair> testFunctionPoint)
+		protected FunctionInterpolation(TestFunctionBase testFunc,
+			IInterpolationStep intrplStep)
 		{
-			testFunction = testFunc;
+			TestFunction = testFunc;
 			step = intrplStep;
 		}
 
-		public InterpolatedPointsDict BuildInterpolations()
+		public TestFunctionBase TestFunction { get; set; }
+
+		public GaussianMethodAlpha CustomGaussianAlpha { get; set; } = new GaussianMethodAlpha();
+
+		public abstract InterpolatedPointsDict BuildInterpolations();
+	}
+
+	public static class DataInterpolationFactory
+	{
+		public static IDataInterpolation GetInstance(TestFunctionBase testFunc, IInterpolationStep intrplStep)
 		{
+			if (testFunc is ParametricTestFunction) {
+				return new ParametricFunctionInterpolation(testFunc, intrplStep);
+			}
+
+			return new SimpleFunctionInterpolation(testFunc, intrplStep, x => testFunc.GetValue(x));
+		}
+	}
+
+	public class SimpleFunctionInterpolation : FunctionInterpolation
+	{
+		protected readonly Func<double, PointPair> testFunctionPoint;
+
+		public SimpleFunctionInterpolation(TestFunctionBase testFunc, IInterpolationStep intrplStep, Func<double, PointPair> testFuncPoint)
+			: base(testFunc, intrplStep)
+		{
+			testFunctionPoint = testFuncPoint;
+
 			makeBasisAndCorrectFuncValues();
 			makeMethodsAndSetupAlpha();
+		}
 
+		public override InterpolatedPointsDict BuildInterpolations()
+		{
 			var interpolatedPoints = new InterpolatedPointsDict();
-			foreach (var method in interpolationMethods) {
+			foreach (var method in InterpolationMethods) {
 				interpolatedPoints[method.Key] = makeInterpolation(method.Value);
 			}
 
 			return interpolatedPoints;
 		}
 
+		public BasisAndCorrectFuncValues BasisAndFuncValues { get; private set; }
+
+		public InterpolationMethods InterpolationMethods { get; private set; }
+
 		private void makeBasisAndCorrectFuncValues()
 		{
-			basisAndFuncValues = new BasisAndCorrectFuncValues(
-				testFunction, step, x => testFunction.GetValue(x)
-			);
+			BasisAndFuncValues = new BasisAndCorrectFuncValues(TestFunction, step, testFunctionPoint);
 		}
 
 		private void makeMethodsAndSetupAlpha()
 		{
-			var basisPoints = basisAndFuncValues.BasisPoints;
+			var basisPoints = BasisAndFuncValues.BasisPoints;
 
-			double gaussAlpha = Halper.GetSidorenkoAlpha(basisPoints.Count - 1, basisPoints.XMin(), basisPoints.XMax());
-			interpolationMethods = Halper.AllInterpolations(basisPoints, gaussAlpha);
+			double gaussAlpha = CustomGaussianAlpha.TryGetValue(Method.Gaus, out var customGaussAlpha)
+								? customGaussAlpha
+								: Halper.GetSidorenkoAlpha(basisPoints.Count - 1, basisPoints.XMin(), basisPoints.XMax());
+
+			CustomGaussianAlpha[Method.Gaus] = gaussAlpha;
+			InterpolationMethods = Halper.AllInterpolations(basisPoints, gaussAlpha);
 
 			// Setup Alpha for Gaussian methods of interpolation
 			foreach (var gaussianParamIntrplType in new[] { Method.GausParamNormal, Method.GausParamSum }) {
-				var gaussianParamIntrpl = interpolationMethods[gaussianParamIntrplType].toGaussian();
+				var gaussianParamIntrpl = InterpolationMethods[gaussianParamIntrplType].toGaussian();
 
 				var (TMin, TMax) = (gaussianParamIntrpl.TMin, gaussianParamIntrpl.TMax);
-				gaussianParamIntrpl.Alpha = Halper.GetSidorenkoAlpha(basisPoints.Count - 1, TMin, TMax);
+				gaussianParamIntrpl.Alpha = CustomGaussianAlpha.TryGetValue(gaussianParamIntrplType, out var customParamGaussAlpha)
+											? customParamGaussAlpha
+											: Halper.GetSidorenkoAlpha(basisPoints.Count - 1, TMin, TMax);
+
+				CustomGaussianAlpha[gaussianParamIntrplType] = gaussianParamIntrpl.Alpha;
 			}
 		}
 
 		private PointPairList makeInterpolation(InterpolationBase intrplMethod)
 		{
-			var basisPoints = basisAndFuncValues.BasisPoints;
+			var basisPoints = BasisAndFuncValues.BasisPoints;
 			PointPairList interpolatedPoints = new PointPairList();
 
 			if (intrplMethod is GaussianParametricInterpolation) {
@@ -107,65 +139,77 @@ namespace GaussianInterpolationResearch.InterpolationBuilders
 				for (int ti = 1; ti < basisPoints.Count; ti++) {
 					double prevT = parametricIntrpl.GetT(ti - 1);
 					double curT = parametricIntrpl.GetT(ti);
-					double delta = (curT - prevT) / (basisAndFuncValues.PointsNumberBetweenBasis + 1);
+					double delta = (curT - prevT) / (BasisAndFuncValues.PointsNumberBetweenBasis + 1);
 
 					// here we should put points for comperison distance beetwen each method
-					for (int pbi = 0; pbi <= basisAndFuncValues.PointsNumberBetweenBasis; pbi++) { // pbi means Point Between Bassis Iter
+					for (int pbi = 0; pbi <= BasisAndFuncValues.PointsNumberBetweenBasis; pbi++) { // pbi means Point Between Bassis Iter
 						interpolatedPoints.Add(parametricIntrpl.GetPoint(prevT + pbi * delta));
 					}
 				}
 
 				// вместо ниже в цикле выше на <= заменить
-				                double lastT = parametricIntrpl.GetT(basisPoints.Count - 1);
-				                PointPair lastPoint = parametricIntrpl.GetPoint(lastT);
-				                interpolatedPoints.Add(lastPoint);
+				double lastT = parametricIntrpl.GetT(basisPoints.Count - 1);
+				PointPair lastPoint = parametricIntrpl.GetPoint(lastT);
+				interpolatedPoints.Add(lastPoint);
 
 			} else {
 				for (int xi = 1; xi < basisPoints.Count; xi++) {
 					double prevX = basisPoints[xi - 1].X;
 					double curX = basisPoints[xi].X;
-					double delta = (curX - prevX) / (basisAndFuncValues.PointsNumberBetweenBasis + 1);
+					double delta = (curX - prevX) / (BasisAndFuncValues.PointsNumberBetweenBasis + 1);
 
 					// here we should put points for comperison distance beetwen each method
-					for (int pbi = 0; pbi <= basisAndFuncValues.PointsNumberBetweenBasis; pbi++) { // pbi means Point Between Bassis Iter
+					for (int pbi = 0; pbi <= BasisAndFuncValues.PointsNumberBetweenBasis; pbi++) { // pbi means Point Between Bassis Iter
 						interpolatedPoints.Add(intrplMethod.GetPoint(prevX + pbi * delta));
 					}
 				}
-				
+
 				// вместо ниже в цикле выше на <= заменить
-								double lastX = basisPoints[basisPoints.Count - 1].X;
-								PointPair lastPoint = intrplMethod.GetPoint(lastX);
-								interpolatedPoints.Add(lastPoint);
+				double lastX = basisPoints[basisPoints.Count - 1].X;
+				PointPair lastPoint = intrplMethod.GetPoint(lastX);
+				interpolatedPoints.Add(lastPoint);
 			}
 
 			return interpolatedPoints;
 		}
 	}
 
-	public class ParametricFunctionInterpolation : IFunctionInterpolation
+	public class ParametricFunctionInterpolation : FunctionInterpolation
 	{
-		private readonly TestFunctionBase testFunction;
-		private readonly IInterpolationStep step;
+		private readonly SimpleFunctionInterpolation XTInterpolation;
+		private readonly SimpleFunctionInterpolation YTInterpolation;
 
 		public ParametricFunctionInterpolation(TestFunctionBase testFunc, IInterpolationStep intrplStep)
+			: base(testFunc, intrplStep)
 		{
-			testFunction = testFunc;
-			step = intrplStep;
+			XTInterpolation = new SimpleFunctionInterpolation(
+				TestFunction, step, t => new PointPair(t, TestFunction.GetValue(t).X));
+
+			YTInterpolation = new SimpleFunctionInterpolation(
+				TestFunction, step, t => new PointPair(t, TestFunction.GetValue(t).Y));
+
+			BasisAndFuncValues = new BasisAndCorrectFuncValues[] {
+				XTInterpolation.BasisAndFuncValues,
+				YTInterpolation.BasisAndFuncValues
+			};
+
+			InterpolationMethods = new InterpolationMethods[] {
+				XTInterpolation.InterpolationMethods,
+				YTInterpolation.InterpolationMethods
+			};
 		}
 
-		public InterpolatedPointsDict BuildInterpolations()
+		public override InterpolatedPointsDict BuildInterpolations()
 		{
-
-			var XTInterpolation = new SimpleFunctionInterpolation(
-				testFunction, step, t => new PointPair(t, testFunction.GetValue(t).X));
-			var YTInterpolation = new SimpleFunctionInterpolation(
-				testFunction, step, t => new PointPair(t, testFunction.GetValue(t).Y));
-
 			var XTInterpolatedPoints = XTInterpolation.BuildInterpolations();
-			var YTInterpolatedPoints = XTInterpolation.BuildInterpolations();
+			var YTInterpolatedPoints = YTInterpolation.BuildInterpolations();
 
 			return XTInterpolatedPoints;
 		}
+
+		public BasisAndCorrectFuncValues[] BasisAndFuncValues { get; private set; }
+
+		public InterpolationMethods[] InterpolationMethods { get; private set; }
 	}
 
 	public static class Halper
@@ -186,12 +230,40 @@ namespace GaussianInterpolationResearch.InterpolationBuilders
 		{
 			return Math.PI * size / ((xMax - xMin) * (xMax - xMin));
 		}
+
+		public static double GetAlgorithmScore(BasisAndCorrectFuncValues basisAndCorrectFuncValues, PointPairList interpolatedPoints)
+		{
+			// count delta between basis and interpolatedPoints
+			List<double> distanceBetweenMethodPoints = new List<double>();
+			double methodMark = 0;
+			int countOfDeltas = 0;
+
+			var correctFuncValuesPoints = basisAndCorrectFuncValues.CorrectFuncValuesPoints;
+			for (int i = 0; i < correctFuncValuesPoints.Count; i++) {
+				if (i % 3 == 0) // We don't include basis
+					continue;
+
+				double delta = distance(correctFuncValuesPoints[i], interpolatedPoints[i]);
+				distanceBetweenMethodPoints.Add(delta);
+
+				delta *= delta; // delta^2
+				methodMark += delta;
+				countOfDeltas++;
+			}
+
+			methodMark /= countOfDeltas; // average delta
+			methodMark = Math.Sqrt(methodMark);
+
+			return methodMark;
+
+			static double distance(PointPair p, PointPair r) => Math.Sqrt(Math.Pow(p.X - r.X, 2) + Math.Pow(p.Y - r.Y, 2));
+		}
 	}
 
 	public class BasisAndCorrectFuncValues
 	{
 		public BasisAndCorrectFuncValues(TestFunctionBase testFunction, IInterpolationStep step,
-										 Func<double, PointPair> testFunctionPoint, 
+										 Func<double, PointPair> testFunctionPoint,
 										 int pointsNumberBetweenBasis = 2)
 		{
 			PointsNumberBetweenBasis = pointsNumberBetweenBasis;
@@ -220,7 +292,7 @@ namespace GaussianInterpolationResearch.InterpolationBuilders
 				//}
 				//Log($"t={x}, {(isX ? "x" : "y")}={BasisPoints.Last()}");
 				BasisPoints.Add(testFunctionPoint(x));
-				Log($"x//t={x}, X//y(t){BasisPoints.Last()}");
+				//Log($"x//t={x}, X//y(t){BasisPoints.Last()}");
 
 				if (double.IsNaN(BasisPoints.Last().Y) || double.IsInfinity(BasisPoints.Last().Y)) {
 					throw new ArgumentException($"XMin == {testFunction.XMin} correctXMax == {correctXMax}\n" +

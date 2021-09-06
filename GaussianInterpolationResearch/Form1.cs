@@ -1,5 +1,6 @@
 ﻿using GaussianInterpolationResearch.TestFunctions;
 using Interpolation;
+using MethodsInterpolation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -120,26 +121,35 @@ namespace GaussianInterpolationResearch {
 			for (funcIt = 0; funcIt < testFunctions.Length; funcIt++) {
 				try {
 					TestFunctionBase testFunction = testFunctions[funcIt];
-					PointPairList basisPoints;
-					PointPairList correctFuncValue;
-
-					(basisPoints, correctFuncValue) = constructBasisAndCorrectFuncValues(testFunction);
+					//PointPairList basisPoints;
+					//PointPairList correctFuncValue;
+					//
+					//(basisPoints, correctFuncValue) = constructBasisAndCorrectFuncValues(testFunction);
 
 					setAxisTitleName();
 
 					// create an array from different interpolations types
-					double normalAlpha = countAlpha(0, basisPoints.Count - 1, basisPoints.XMin(), basisPoints.XMax());
-					InterpolationBase[] interpolations = constructInterpolationList(basisPoints, normalAlpha);
+					//double normalAlpha = countAlpha(0, basisPoints.Count - 1, basisPoints.XMin(), basisPoints.XMax());
+					//InterpolationBase[] interpolations = constructInterpolationList(basisPoints, normalAlpha);
 
 					// setup Alpha for Gaussian methods of interpolation
-					intrplHelper(interpolations).gaussParametricIntrpl.Alpha = countAlpha(0, basisPoints.Count - 1, intrplHelper(interpolations).gaussParametricIntrpl.TMin, intrplHelper(interpolations).gaussParametricIntrpl.TMax);
-					intrplHelper(interpolations).gaussSummaryIntrpl.Alpha = countAlpha(0, basisPoints.Count - 1, intrplHelper(interpolations).gaussSummaryIntrpl.TMin, intrplHelper(interpolations).gaussSummaryIntrpl.TMax);
-					alphaNonParametricTb.Text = normalAlpha.ToDoubString();
-					alphaParametricTb.Text = intrplHelper(interpolations).gaussParametricIntrpl.Alpha.ToDoubString();
-					alphaSummaryTb.Text = intrplHelper(interpolations).gaussSummaryIntrpl.Alpha.ToDoubString();
+					//intrplHelper(interpolations).gaussParametricIntrpl.Alpha = countAlpha(0, basisPoints.Count - 1, intrplHelper(interpolations).gaussParametricIntrpl.TMin, intrplHelper(interpolations).gaussParametricIntrpl.TMax);
+					//intrplHelper(interpolations).gaussSummaryIntrpl.Alpha = countAlpha(0, basisPoints.Count - 1, intrplHelper(interpolations).gaussSummaryIntrpl.TMin, intrplHelper(interpolations).gaussSummaryIntrpl.TMax);
+					
+					
 
-					zedGraph.GraphPane.CurveList.Clear();
-					List<MethodData> methodData = drawGraphic(testFunction, basisPoints, correctFuncValue, interpolations);
+
+					var interpolationStep = stepFixedMode.Checked 
+											? (IInterpolationStep) new FixedStep(double.Parse(stepTb.Text))
+											: new IncreasingStep(testFunction);
+
+					var funcInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
+
+					alphaNonParametricTb.Text = funcInterpolation.CustomGaussianAlpha[Method.Gaus].ToDoubString();
+					alphaParametricTb.Text = funcInterpolation.CustomGaussianAlpha[Method.GausParamNormal].ToDoubString();
+					alphaSummaryTb.Text = funcInterpolation.CustomGaussianAlpha[Method.GausParamSum].ToDoubString();
+
+					redrawGraphic(funcInterpolation as FunctionInterpolation);
 					zoomGraphic();
 
 					// waiting, while user check 'checkBox1'
@@ -147,26 +157,27 @@ namespace GaussianInterpolationResearch {
 						await Task.Delay(1000);
 						if(!standartFunctionMode.Checked)
 							return;
-						if (double.Parse(alphaNonParametricTb.Text) != intrplHelper(interpolations).gaussIntrpl.Alpha
-							|| double.Parse(alphaParametricTb.Text) != intrplHelper(interpolations).gaussParametricIntrpl.Alpha
-							|| double.Parse(alphaSummaryTb.Text) != intrplHelper(interpolations).gaussSummaryIntrpl.Alpha) 
+						if (double.Parse(alphaNonParametricTb.Text) != funcInterpolation.CustomGaussianAlpha[Method.Gaus]
+							|| double.Parse(alphaParametricTb.Text) != funcInterpolation.CustomGaussianAlpha[Method.GausParamNormal]
+							|| double.Parse(alphaSummaryTb.Text) != funcInterpolation.CustomGaussianAlpha[Method.GausParamSum])
 						{
-							normalAlpha = double.Parse(alphaNonParametricTb.Text);
-							interpolations = constructInterpolationList(basisPoints, normalAlpha);
-							intrplHelper(interpolations).gaussParametricIntrpl.Alpha = double.Parse(alphaParametricTb.Text);
-							intrplHelper(interpolations).gaussSummaryIntrpl.Alpha = double.Parse(alphaSummaryTb.Text);
-							zedGraph.GraphPane.CurveList.Clear();
-							methodData = drawGraphic(testFunction, basisPoints, correctFuncValue, interpolations);
+
+							funcInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
+							funcInterpolation.CustomGaussianAlpha[Method.Gaus] = double.Parse(alphaNonParametricTb.Text);
+							funcInterpolation.CustomGaussianAlpha[Method.GausParamNormal] = double.Parse(alphaParametricTb.Text);
+							funcInterpolation.CustomGaussianAlpha[Method.GausParamSum] = double.Parse(alphaSummaryTb.Text);
+
+							redrawGraphic(funcInterpolation as FunctionInterpolation);
 							zoomGraphic();
 						}
 					}
 
-					reportData[funcIt] = new ReportData {
-						CorrectFuncValue = correctFuncValue,
-						TestFunction = testFunction,
-						MethodsData = methodData,
-						GraphicImage = zedGraph.GraphPane.GetImage()
-					};
+					//reportData[funcIt] = new ReportData {
+					//	CorrectFuncValue = correctFuncValue,
+					//	TestFunction = testFunction,
+					//	MethodsData = methodData,
+					//	GraphicImage = zedGraph.GraphPane.GetImage()
+					//};
 
 				} catch (Exception ex) {
 					string funcName = "Unknown function";
@@ -241,6 +252,78 @@ namespace GaussianInterpolationResearch {
 			zedGraph.Invalidate();
 		}
 
+		private List<MethodData> redrawGraphic(FunctionInterpolation funcInterpolation)
+		{
+			List<MethodData> methodDatas = new List<MethodData>();
+			GraphPane pane = zedGraph.GraphPane;
+
+			pane.CurveList.Clear();
+
+			var methodInterpolatedPoints = funcInterpolation.BuildInterpolations();
+
+			foreach (var interpolatedPoints in methodInterpolatedPoints) {
+				//PointPairList interpolatedPoints = doInterpolation(intrplMethod, basisPoints);
+				//var funcInterpolation = InterpolationBuilders.FunctionInterpolationFactory.GetInstance(testFunction, 
+				//	new InterpolationBuilders.IncreasingStep(testFunction));
+				//var points = funcInterpolation.BuildInterpolations();
+				//
+				//if(intrplMethod == intrplHelper(interpolations).gaussSummaryIntrpl) {
+				//	Log($"interpolatedPoints=== GausParamSum{interpolatedPoints.Equals(points[Method.GausParamSum])}");
+				//}
+
+				//MethodData methodData = new MethodData() {
+				//	Method = intrplMethod,
+				//	InterpolatedFuncValue = interpolatedPoints
+				//};
+
+				InterpolationBase intrplMethod = funcInterpolation is SimpleFunctionInterpolation 
+					? (funcInterpolation as SimpleFunctionInterpolation).InterpolationMethods[interpolatedPoints.Key]
+					: (funcInterpolation as ParametricFunctionInterpolation).InterpolationMethods[0][interpolatedPoints.Key];
+
+				{
+					// add interpolation to graphic
+					LineItem myCurve = pane.AddCurve($"F(x) = {intrplMethod.Name}", interpolatedPoints.Value, intrplMethod.CurveColor, intrplMethod.Symbol);
+					myCurve.Symbol.Size = 5;
+					myCurve.Symbol.Fill = new Fill(intrplMethod.CurveColor);
+					myCurve.Line.IsVisible = true;
+				}
+
+				//if (correctFuncValue != null) {
+				//	var (deltaBetweenMethod, methodMark) = countAlgorithmScore(correctFuncValue, interpolatedPoints);
+				//	setScore(methodMark, intrplMethod);
+				//	methodData.DeltaBetweenMethod = deltaBetweenMethod;
+				//	methodData.MethodMark = methodMark;
+				//}
+
+				//methodDatas.Add(methodData);
+			}
+
+			{
+				var testFunction = funcInterpolation.TestFunction;
+
+				// add basis curve to graphic
+				title = testFunction == null ? "Covid-19 Statistics" : $"Interpolation for y = F({testFunction.Name})";
+
+				BasisAndCorrectFuncValues basisAndFuncValues = funcInterpolation is SimpleFunctionInterpolation
+					? (funcInterpolation as SimpleFunctionInterpolation).BasisAndFuncValues
+					: (funcInterpolation as ParametricFunctionInterpolation).BasisAndFuncValues[0];
+
+				LineItem myCurve;
+				myCurve = pane.AddCurve($"Main_basis = {(testFunction == null ? "" : testFunction.Name)}", basisAndFuncValues.BasisPoints, Color.Red, SymbolType.TriangleDown);
+				myCurve.Symbol.Size = 7;
+				myCurve.Symbol.Fill = new Fill(Color.Red);
+				myCurve.Line.IsVisible = false;
+				//if (correctFuncValue != null) {
+					myCurve = pane.AddCurve($"Middle_basis = {(testFunction == null ? "" : testFunction.Name)}", basisAndFuncValues.CorrectFuncValuesPoints, Color.Green, SymbolType.TriangleDown);
+					myCurve.Symbol.Size = 3;
+					myCurve.Symbol.Fill = new Fill(Color.Green);
+					myCurve.Line.IsVisible = false;
+				//}
+			}
+
+			return methodDatas;
+		}
+
 		private List<MethodData> drawGraphic(TestFunctionBase testFunction, PointPairList basisPoints, PointPairList correctFuncValue, InterpolationBase[] interpolations)
 		{
 			List<MethodData> methodDatas = new List<MethodData>();
@@ -248,9 +331,13 @@ namespace GaussianInterpolationResearch {
 
 			foreach (InterpolationBase intrplMethod in interpolations) {
 				PointPairList interpolatedPoints = doInterpolation(intrplMethod, basisPoints);
-				var simpleFunctionInterpolation = new InterpolationBuilders.ParametricFunctionInterpolation(testFunction, 
-					new InterpolationBuilders.IncreasingStep(testFunction));
-				var points = simpleFunctionInterpolation.BuildInterpolations();
+				//var funcInterpolation = InterpolationBuilders.FunctionInterpolationFactory.GetInstance(testFunction, 
+				//	new InterpolationBuilders.IncreasingStep(testFunction));
+				//var points = funcInterpolation.BuildInterpolations();
+				//
+				//if(intrplMethod == intrplHelper(interpolations).gaussSummaryIntrpl) {
+				//	Log($"interpolatedPoints=== GausParamSum{interpolatedPoints.Equals(points[Method.GausParamSum])}");
+				//}
 
 				MethodData methodData = new MethodData() {
 					Method = intrplMethod,
@@ -318,7 +405,7 @@ namespace GaussianInterpolationResearch {
 
 			return (distanceBetweenMethodPoints.ToArray(), methodMark);
 
-			double distance(PointPair p, PointPair r) => Math.Sqrt(Math.Pow(p.X - r.X, 2) + Math.Pow(p.Y - r.Y, 2));
+			static double distance(PointPair p, PointPair r) => Math.Sqrt(Math.Pow(p.X - r.X, 2) + Math.Pow(p.Y - r.Y, 2));
 		}
 
 		private PointPairList doInterpolation(InterpolationBase intrplMethod, PointPairList basisPoints)
@@ -383,7 +470,7 @@ namespace GaussianInterpolationResearch {
 					basisPoints.Add(testFunction.GetValue(x));
 				}
 
-				Log($"t={x}, {(isX ? "x" : "y")}={basisPoints.Last()}");
+				//Log($"t={x}, {(isX ? "x" : "y")}={basisPoints.Last()}");
 
 				if (double.IsNaN(basisPoints.Last().Y) || double.IsInfinity(basisPoints.Last().Y)) {
 					throw new ArgumentException($"XMin == {testFunction.XMin} correctXMax == {correctXMax}\n" +
@@ -401,7 +488,7 @@ namespace GaussianInterpolationResearch {
 					double delta = (nextX - x) / (pointsBetweenBasisNumber + 1);
 					for (int pbi = 1; pbi <= pointsBetweenBasisNumber; pbi++) { // pbi means Point Between Bassis Iter
 						double middle = curPoint.X + pbi * delta;
-						Log($"x {x} curPoint.X {curPoint.X}");
+						//Log($"x {x} curPoint.X {curPoint.X}");
 						if (paramTestFunc != null) {
 							//middle += x; // x means t
 							//correctFuncValue.Add(paramTestFunc.GetValue(middle));

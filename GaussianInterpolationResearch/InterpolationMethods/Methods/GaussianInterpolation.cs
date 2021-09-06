@@ -4,6 +4,7 @@ using ZedGraph;
 using System.Drawing;
 
 namespace Interpolation {
+
 	public class GaussianInterpolation : InterpolationBase {
         private readonly double[] basis;
 

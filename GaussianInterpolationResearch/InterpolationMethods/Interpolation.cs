@@ -13,4 +13,11 @@ namespace Interpolation {
 
     public enum ParametricType { Normal, Summary };
 
+    public enum Method
+    {
+        Lagrange,
+        Gaus,
+        GausParamNormal,
+        GausParamSum
+    }
 }

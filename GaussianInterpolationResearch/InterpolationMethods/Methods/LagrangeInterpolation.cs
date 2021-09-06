@@ -2,6 +2,7 @@
 using ZedGraph;
 
 namespace Interpolation {
+
 	public class LagrangeInterpolation : InterpolationBase {
 
         public LagrangeInterpolation(PointPairList inputPoints) : base(inputPoints)

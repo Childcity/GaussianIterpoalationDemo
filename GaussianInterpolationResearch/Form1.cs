@@ -248,6 +248,10 @@ namespace GaussianInterpolationResearch {
 
 			foreach (InterpolationBase intrplMethod in interpolations) {
 				PointPairList interpolatedPoints = doInterpolation(intrplMethod, basisPoints);
+				var simpleFunctionInterpolation = new InterpolationBuilders.ParametricFunctionInterpolation(testFunction, 
+					new InterpolationBuilders.IncreasingStep(testFunction));
+				var points = simpleFunctionInterpolation.BuildInterpolations();
+
 				MethodData methodData = new MethodData() {
 					Method = intrplMethod,
 					InterpolatedFuncValue = interpolatedPoints

@@ -1,6 +1,7 @@
 ﻿using System;
 
 namespace Interpolation {
+
 	[Serializable]
     public class InterpolationException : Exception {
 

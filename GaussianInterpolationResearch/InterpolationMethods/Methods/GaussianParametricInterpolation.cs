@@ -4,6 +4,7 @@ using System.Linq;
 using ZedGraph;
 
 namespace Interpolation {
+
 	public class GaussianParametricInterpolation : GaussianInterpolation {
         private GaussianInterpolation gaussianXt;
         private GaussianInterpolation gaussianYt;

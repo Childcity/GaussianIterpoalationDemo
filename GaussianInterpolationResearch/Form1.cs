@@ -144,10 +144,10 @@ namespace GaussianInterpolationResearch {
 											: new IncreasingStep(testFunction);
 
 					var funcInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
-
-					alphaNonParametricTb.Text = funcInterpolation.CustomGaussianAlpha[Method.Gaus].ToDoubString();
-					alphaParametricTb.Text = funcInterpolation.CustomGaussianAlpha[Method.GausParamNormal].ToDoubString();
-					alphaSummaryTb.Text = funcInterpolation.CustomGaussianAlpha[Method.GausParamSum].ToDoubString();
+					var customGaussianAlpha = funcInterpolation.CustomGaussianAlpha;
+					alphaNonParametricTb.Text = customGaussianAlpha[Method.Gaus].ToDoubString();
+					alphaParametricTb.Text = customGaussianAlpha[Method.GausParamNormal].ToDoubString();
+					alphaSummaryTb.Text = customGaussianAlpha[Method.GausParamSum].ToDoubString();
 
 					redrawGraphic(funcInterpolation as FunctionInterpolation);
 					zoomGraphic();
@@ -162,10 +162,12 @@ namespace GaussianInterpolationResearch {
 							|| double.Parse(alphaSummaryTb.Text) != funcInterpolation.CustomGaussianAlpha[Method.GausParamSum])
 						{
 
-							funcInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
-							funcInterpolation.CustomGaussianAlpha[Method.Gaus] = double.Parse(alphaNonParametricTb.Text);
-							funcInterpolation.CustomGaussianAlpha[Method.GausParamNormal] = double.Parse(alphaParametricTb.Text);
-							funcInterpolation.CustomGaussianAlpha[Method.GausParamSum] = double.Parse(alphaSummaryTb.Text);
+							//funcInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
+							customGaussianAlpha = funcInterpolation.CustomGaussianAlpha;
+							customGaussianAlpha[Method.Gaus] = double.Parse(alphaNonParametricTb.Text);
+							customGaussianAlpha[Method.GausParamNormal] = double.Parse(alphaParametricTb.Text);
+							customGaussianAlpha[Method.GausParamSum] = double.Parse(alphaSummaryTb.Text);
+							funcInterpolation.CustomGaussianAlpha = customGaussianAlpha;
 
 							redrawGraphic(funcInterpolation as FunctionInterpolation);
 							zoomGraphic();

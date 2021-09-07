@@ -1,4 +1,5 @@
 ﻿using GaussianInterpolationResearch.TestFunctions;
+using static GaussianInterpolationResearch.Utils;
 using Interpolation;
 using System;
 using System.Collections.Generic;
@@ -45,6 +46,7 @@ namespace MethodsInterpolation
 	public abstract class FunctionInterpolation : IDataInterpolation
 	{
 		protected readonly IInterpolationStep step;
+		protected GaussianMethodAlpha customGaussianAlpha = new GaussianMethodAlpha();
 
 		protected FunctionInterpolation(TestFunctionBase testFunc,
 			IInterpolationStep intrplStep)
@@ -55,7 +57,7 @@ namespace MethodsInterpolation
 
 		public TestFunctionBase TestFunction { get; set; }
 
-		public GaussianMethodAlpha CustomGaussianAlpha { get; set; } = new GaussianMethodAlpha();
+		public abstract GaussianMethodAlpha CustomGaussianAlpha { get; set; }
 
 		public abstract InterpolatedPointsDict BuildInterpolations();
 	}
@@ -98,6 +100,15 @@ namespace MethodsInterpolation
 		public BasisAndCorrectFuncValues BasisAndFuncValues { get; private set; }
 
 		public InterpolationMethods InterpolationMethods { get; private set; }
+
+		public override GaussianMethodAlpha CustomGaussianAlpha
+		{
+			get => customGaussianAlpha;
+			set {
+				customGaussianAlpha = value;
+				makeMethodsAndSetupAlpha();
+			}
+		}
 
 		private void makeBasisAndCorrectFuncValues()
 		{
@@ -176,12 +187,41 @@ namespace MethodsInterpolation
 
 	public class ParametricFunctionInterpolation : FunctionInterpolation
 	{
-		private readonly SimpleFunctionInterpolation XTInterpolation;
-		private readonly SimpleFunctionInterpolation YTInterpolation;
+		private SimpleFunctionInterpolation XTInterpolation;
+		private SimpleFunctionInterpolation YTInterpolation;
 
 		public ParametricFunctionInterpolation(TestFunctionBase testFunc, IInterpolationStep intrplStep)
 			: base(testFunc, intrplStep)
 		{
+			init();
+		}
+
+		public override GaussianMethodAlpha CustomGaussianAlpha { 
+			get => XTInterpolation.CustomGaussianAlpha;
+			set {
+				customGaussianAlpha = value;
+				if (XTInterpolation != null) {
+					XTInterpolation.CustomGaussianAlpha = customGaussianAlpha;
+				}
+				//init();
+			}
+		}
+
+		public override InterpolatedPointsDict BuildInterpolations()
+		{
+			var XTInterpolatedPoints = XTInterpolation.BuildInterpolations();
+			var YTInterpolatedPoints = YTInterpolation.BuildInterpolations();
+
+			return XTInterpolatedPoints;
+		}
+
+		public BasisAndCorrectFuncValues[] BasisAndFuncValues { get; private set; }
+
+		public InterpolationMethods[] InterpolationMethods { get; private set; }
+
+		void init()
+		{
+
 			XTInterpolation = new SimpleFunctionInterpolation(
 				TestFunction, step, t => new PointPair(t, TestFunction.GetValue(t).X));
 
@@ -197,19 +237,14 @@ namespace MethodsInterpolation
 				XTInterpolation.InterpolationMethods,
 				YTInterpolation.InterpolationMethods
 			};
+
+			Log($"{XTInterpolation.CustomGaussianAlpha[Method.Gaus]}" +
+				$"{XTInterpolation.CustomGaussianAlpha[Method.GausParamNormal]}" +
+				$"{XTInterpolation.CustomGaussianAlpha[Method.GausParamSum]}");
+			Log($"{YTInterpolation.CustomGaussianAlpha[Method.Gaus]}" +
+				$"{YTInterpolation.CustomGaussianAlpha[Method.GausParamNormal]}" +
+				$"{YTInterpolation.CustomGaussianAlpha[Method.GausParamSum]}");
 		}
-
-		public override InterpolatedPointsDict BuildInterpolations()
-		{
-			var XTInterpolatedPoints = XTInterpolation.BuildInterpolations();
-			var YTInterpolatedPoints = YTInterpolation.BuildInterpolations();
-
-			return XTInterpolatedPoints;
-		}
-
-		public BasisAndCorrectFuncValues[] BasisAndFuncValues { get; private set; }
-
-		public InterpolationMethods[] InterpolationMethods { get; private set; }
 	}
 
 	public static class Halper

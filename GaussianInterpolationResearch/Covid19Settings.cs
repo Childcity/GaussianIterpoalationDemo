@@ -21,22 +21,13 @@ namespace GaussianInterpolationResearch {
 			InitializeComponent();
 		}
 
-		public (PointPairList basis, PointPairList correctFVal) GetBasis()
+		public PointPairList GetPoints()
 		{
 			string country = comboBox2.SelectedItem.ToString();
-			PointPairList correctFuncValue;
-
-			if (comboBox1.SelectedIndex == 0) {
-				correctFuncValue = covidRequest.GetGeneralPoints(country, dateTimePicker1.Value, dateTimePicker2.Value);
-			} else {
-				correctFuncValue = covidRequest.GetEveryDayPoints(country, dateTimePicker1.Value, dateTimePicker2.Value);
-			}
-
-			PointPairList basis = new PointPairList();
-			for (int i = 0; i <= correctFuncValue.Count; i += 3) {
-				basis.Add(correctFuncValue[i]);
-			}
-			return (basis, correctFuncValue);
+			var (from, to) = (dateTimePicker1.Value, dateTimePicker2.Value);
+			return comboBox1.SelectedIndex == 0 
+				? covidRequest.GetGeneralPoints(country, from, to)
+				: covidRequest.GetEveryDayPoints(country, from, to);
 		}
 
 		private async void covid19Settings_Load(object sender, EventArgs e)

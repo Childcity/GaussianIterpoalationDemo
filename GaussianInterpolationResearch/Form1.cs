@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using ZedGraph;
 using static GaussianInterpolationResearch.Utils;
 using Word = Microsoft.Office.Interop.Word;
+using GaussianInterpolationResearch.Reports;
 
 namespace GaussianInterpolationResearch {
 	public partial class Form1 : Form {
@@ -36,20 +37,6 @@ namespace GaussianInterpolationResearch {
 		private int funcIt = 0;
 		Covid19Settings covidSett;
 
-		private struct MethodData {
-			public InterpolationBase Method { get; set; }
-			public PointPairList InterpolatedFuncValue { get; set; }
-			public double[] DeltaBetweenMethod { get; set; }
-			public double MethodMark { get; set; }
-		}
-
-		private struct ReportData {
-			public TestFunctionBase TestFunction { get; set; }
-			public PointPairList CorrectFuncValue { get; set; }
-			public List<MethodData> MethodsData { get; set; }
-			public Image GraphicImage { get; set; }
-		}
-
 		public Form1()
 		{
 			InitializeComponent();
@@ -66,7 +53,7 @@ namespace GaussianInterpolationResearch {
 			zedGraph.SizeChanged += onSizeChanged;
 			zedGraph.ZoomEvent += onSizeChanged;
 			for (int i = 0; i < methodChooser.Items.Count; i++)
-				methodChooser.SetItemChecked(i, i == 0 ? true : false);
+				methodChooser.SetItemChecked(i, i == 0);
 			methodChooser.ItemCheck += (object sender, ItemCheckEventArgs e) => updateShowingMethod(e);
 
 			settingGraphic();
@@ -116,7 +103,7 @@ namespace GaussianInterpolationResearch {
 		private async void button1_Click(object sender, EventArgs e)
 		{
 			stepGb.Enabled = false;
-			ReportData[] reportData = new ReportData[testFunctions.Length];
+			ReportInputInfo[] reportData = new ReportInputInfo[testFunctions.Length];
 
 			for (funcIt = 0; funcIt < testFunctions.Length; funcIt++) {
 				try {
@@ -155,12 +142,10 @@ namespace GaussianInterpolationResearch {
 						}
 					}
 
-					//reportData[funcIt] = new ReportData {
-					//	CorrectFuncValue = correctFuncValue,
-					//	TestFunction = testFunction,
-					//	MethodsData = methodData,
-					//	GraphicImage = zedGraph.GraphPane.GetImage()
-					//};
+					reportData[funcIt] = new ReportInputInfo {
+						InterpolationData = dataInterpolation as FunctionInterpolation,
+						GraphicImage = zedGraph.GraphPane.GetImage()
+					};
 
 				} catch (Exception ex) {
 					string funcName = "Unknown function";
@@ -433,14 +418,6 @@ namespace GaussianInterpolationResearch {
 			pane.YAxis.ScaleFormatEvent += new Axis.ScaleFormatHandler(YAxis_ScaleFormatEvent);
 		}
 
-		/// <summary>
-		/// Метод, который вызывается, когда надо отобразить очередную метку по оси
-		/// </summary>
-		/// <param name="pane">Указатель на текущий GraphPane</param>
-		/// <param name="axis">Указатель на ось</param>
-		/// <param name="val">Значение, которое надо отобразить</param>
-		/// <param name="index">Порядковый номер данного отсчета</param>
-		/// <returns>Метод должен вернуть строку, которая будет отображаться под данной меткой</returns>
 		private string YAxis_ScaleFormatEvent(GraphPane pane, Axis axis, double val, int index)
 		{
 			if (index % 2 == 0) {
@@ -549,126 +526,22 @@ namespace GaussianInterpolationResearch {
 			zedGraph.Invalidate();
 		}
 
-		private async Task exportToMsWord(ReportData[] reportData)
+		private async Task exportToMsWord(ReportInputInfo[] reportData)
 		{
 			try {
 				Cursor.Current = Cursors.WaitCursor;
 				progressBar1.Visible = true;
 				button1.Enabled = false;
-				await startSTATask(() => buildReport(reportData));
+
+				var report = new MsWordReportBuilder(reportData);
+				await report.Build();
+				//await startSTATask(() => buildReport(reportData));
 			} catch (Exception ex) {
 				MessageBox.Show($"Error while generating Report!\n{ex.Message}");
 			}
 			Cursor.Current = Cursors.Arrow;
 			progressBar1.Visible = false;
 			button1.Enabled = true;
-		}
-
-		void buildReport(ReportData[] data)
-		{
-			object oMissing = System.Reflection.Missing.Value;
-			object oEndOfDoc = "\\endofdoc"; /* \endofdoc is a predefined bookmark */
-
-			//Start Word and create a new document.
-			Word._Application oWord = new Word.Application();
-			Word._Document oDoc = oWord.Documents.Add(ref oMissing, ref oMissing, ref oMissing, ref oMissing);
-			//oDoc.tit = "Gorodetskiy_Interpolation_Report.docx";
-
-			try {
-				data.Where(d => d.MethodsData != null).ToList().ForEach(fucData =>
-				{
-					// Insert title
-					Word.Paragraph oPara;
-					object oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
-					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					oPara.Range.Text = $"Интерполяция для Y = {fucData.TestFunction.Name}";
-					oPara.Range.Bold = 1;
-					oPara.Range.Font.Size = 18;
-					oPara.Range.InsertParagraphAfter();
-
-					// Insert Interval
-					oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
-					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					oPara.Range.Text = $"X є [{fucData.TestFunction.XMin};{fucData.TestFunction.XMax}]. К-во точек = {fucData.MethodsData[0].Method.InputPoints.Count}";
-					oPara.Range.Bold = 0;
-					oPara.Range.Font.Size = 14;
-					oPara.Range.InsertParagraphAfter();
-
-					string stepForEachBasisPoint = string.Empty;
-					for (int i = 1; i <= fucData.MethodsData[0].Method.InputPoints.Count; i++) {
-						stepForEachBasisPoint += $"{i} = {fucData.TestFunction.GetStep(i):F2} ";
-					}
-					oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
-					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					oPara.Range.Text = $"Шаг = [{stepForEachBasisPoint}]";
-					oPara.Range.Bold = 0;
-					oPara.Range.Font.Size = 10;
-					oPara.Format.SpaceAfter = 6;
-					oPara.Range.InsertParagraphAfter();
-
-					oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
-					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					oPara.Range.Text = $"Оценка алгоритма:";
-					oPara.Range.Bold = 1;
-					oPara.Range.Font.Size = 14;
-					oPara.Range.InsertParagraphAfter();
-
-					fucData.MethodsData.ForEach(method =>
-					{
-						// Insert Score
-						oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
-						oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-						oPara.Range.Text = $"{method.Method.Name}" +
-											$"\t\t\t{(method.Method is LagrangeInterpolation ? "\t\t\t" : "")}" +
-											$"{method.MethodMark:F16}";
-						oPara.Range.Bold = 0;
-						oPara.Range.Font.Size = 14;
-						oPara.Range.InsertParagraphAfter();
-					});
-
-					// Insert Chart Image
-
-					oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
-					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					Clipboard.Clear();
-					Clipboard.SetImage(fucData.GraphicImage);
-					oPara.Range.Paste();
-					oPara.Range.InsertParagraphAfter();
-
-					// Insert Space
-					object oCollapseEnd = Word.WdCollapseDirection.wdCollapseEnd;
-					object oPageBreak = Word.WdBreakType.wdPageBreak;
-					oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
-					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					((Word.Range)oRng).Collapse(ref oCollapseEnd);
-					((Word.Range)oRng).InsertBreak(ref oPageBreak);
-					((Word.Range)oRng).Collapse(ref oCollapseEnd);
-					oPara.Format.SpaceAfter = 0;
-					oPara.Range.InsertParagraphAfter();
-				});
-
-				oWord.Visible = true;
-			} catch {
-				oWord.Visible = true;
-				throw;
-			}
-		}
-
-		private Task startSTATask(Action action)
-		{
-			TaskCompletionSource<object> source = new TaskCompletionSource<object>();
-			Thread thread = new Thread(() =>
-			{
-				try {
-					action();
-					source.SetResult(null);
-				} catch (Exception ex) {
-					source.SetException(ex);
-				}
-			});
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
-			return source.Task;
 		}
 
 		private void scoreLagrageLb_Click(object sender, EventArgs e)

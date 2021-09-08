@@ -1,4 +1,5 @@
 ﻿using GaussianInterpolationResearch.TestFunctions;
+using System.Linq;
 using ZedGraph;
 using GaussianMethodAlpha = System.Collections.Generic.Dictionary<Interpolation.Method, double>;
 using InterpolatedPointsDict = System.Collections.Generic.Dictionary<Interpolation.Method, ZedGraph.PointPairList>;
@@ -54,7 +55,15 @@ namespace DataInterpolation
 			var XTInterpolatedPoints = XTInterpolation.BuildInterpolations();
 			var YTInterpolatedPoints = YTInterpolation.BuildInterpolations();
 
-			return XTInterpolatedPoints;
+			InterpolatedPointsDict twoDimInterpolation = new InterpolatedPointsDict();
+
+			foreach (var item in XTInterpolatedPoints) {
+				twoDimInterpolation[item.Key] = new PointPairList();
+				item.Value.Zip(YTInterpolatedPoints[item.Key], (first, sec) => new PointPair(first.Y, sec.Y))
+						  .ToList().ForEach(p => twoDimInterpolation[item.Key].Add(p));
+			}
+
+			return twoDimInterpolation;
 		}
 	}
 }

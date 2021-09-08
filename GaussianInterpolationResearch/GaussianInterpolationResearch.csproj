@@ -130,13 +130,25 @@
     <Compile Include="CovidApi\CovidRequest.cs" />
     <Compile Include="CovidApi\DayInfo.cs" />
     <Compile Include="CovidApi\JsonConverterSettings.cs" />
+    <Compile Include="DataInterpolations\Basises\BasisAndCorrectFuncValues.cs" />
+    <Compile Include="DataInterpolations\Basises\DataBasisAndCorrectFuncValues.cs" />
+    <Compile Include="DataInterpolations\Basises\FunctionBasisAndCorrectFuncValues.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="InterpolationBuilders\SimpleFunctionInterpolation.cs" />
+    <Compile Include="DataInterpolations\DataInterpolationFactory.cs" />
+    <Compile Include="DataInterpolations\Interpolations\DataPointsInterpolation.cs" />
+    <Compile Include="DataInterpolations\Interpolations\FunctionInterpolation.cs" />
+    <Compile Include="DataInterpolations\Halper.cs" />
+    <Compile Include="DataInterpolations\IDataInterpolation.cs" />
+    <Compile Include="DataInterpolations\InterpolationSteps\FixedStep.cs" />
+    <Compile Include="DataInterpolations\InterpolationSteps\IncreasingStep.cs" />
+    <Compile Include="DataInterpolations\InterpolationSteps\IInterpolationStep.cs" />
+    <Compile Include="DataInterpolations\Interpolations\ParametricFunctionInterpolation.cs" />
+    <Compile Include="DataInterpolations\Interpolations\SimpleFunctionInterpolation.cs" />
     <Compile Include="InterpolationMethods\Methods\GaussianInterpolation.cs" />
     <Compile Include="InterpolationMethods\Methods\GaussianParametricInterpolation.cs" />
     <Compile Include="InterpolationMethods\IInterpolation.cs" />

@@ -1,6 +1,6 @@
 ﻿using GaussianInterpolationResearch.TestFunctions;
 using Interpolation;
-using MethodsInterpolation;
+using DataInterpolation;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -121,7 +121,6 @@ namespace GaussianInterpolationResearch {
 			for (funcIt = 0; funcIt < testFunctions.Length; funcIt++) {
 				try {
 					TestFunctionBase testFunction = testFunctions[funcIt];
-					setAxisTitleName();
 
 					var interpolationStep = stepFixedMode.Checked 
 											? (IInterpolationStep) new FixedStep(double.Parse(stepTb.Text))

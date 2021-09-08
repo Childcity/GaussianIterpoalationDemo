@@ -1,21 +1,19 @@
-﻿using GaussianInterpolationResearch.TestFunctions;
+﻿using DataInterpolation;
+using GaussianInterpolationResearch.Reports;
+using GaussianInterpolationResearch.TestFunctions;
 using Interpolation;
-using DataInterpolation;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ZedGraph;
-using static GaussianInterpolationResearch.Utils;
-using Word = Microsoft.Office.Interop.Word;
-using GaussianInterpolationResearch.Reports;
 
-namespace GaussianInterpolationResearch {
-	public partial class Form1 : Form {
+namespace GaussianInterpolationResearch
+{
+	public partial class Form1 : Form
+	{
 		public TestFunctionBase[] testFunctions = new TestFunctionBase[] {
 			new ArchimedeanSpiral(),
 			new XInPower2(), new OneByX(), new SqrtX(), new Sqrt3X(),
@@ -109,8 +107,8 @@ namespace GaussianInterpolationResearch {
 				try {
 					TestFunctionBase testFunction = testFunctions[funcIt];
 
-					var interpolationStep = stepFixedMode.Checked 
-											? (IInterpolationStep) new FixedStep(double.Parse(stepTb.Text))
+					var interpolationStep = stepFixedMode.Checked
+											? (IInterpolationStep)new FixedStep(double.Parse(stepTb.Text))
 											: new IncreasingStep(testFunction);
 
 					var dataInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
@@ -124,12 +122,11 @@ namespace GaussianInterpolationResearch {
 					// waiting, while user check 'checkBox1'
 					while (!checkBox1.Checked && !autoReportChBx.Checked) {
 						await Task.Delay(1000);
-						if(!standartFunctionMode.Checked)
+						if (!standartFunctionMode.Checked)
 							return;
 						if (double.Parse(alphaNonParametricTb.Text) != dataInterpolation.GaussianAlpha[Method.Gaus]
 							|| double.Parse(alphaParametricTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamNormal]
-							|| double.Parse(alphaSummaryTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamSum])
-						{
+							|| double.Parse(alphaSummaryTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamSum]) {
 							dataInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
 
 							var gaussianAlpha = dataInterpolation.GaussianAlpha;
@@ -188,18 +185,17 @@ namespace GaussianInterpolationResearch {
 					await Task.Delay(1000);
 					if (double.Parse(alphaNonParametricTb.Text) != dataInterpolation.GaussianAlpha[Method.Gaus]
 							|| double.Parse(alphaParametricTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamNormal]
-							|| double.Parse(alphaSummaryTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamSum])
-						{
-							dataInterpolation = DataInterpolationFactory.GetInstance(covidSett.GetPoints());
+							|| double.Parse(alphaSummaryTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamSum]) {
+						dataInterpolation = DataInterpolationFactory.GetInstance(covidSett.GetPoints());
 
-							var gaussianAlpha = dataInterpolation.GaussianAlpha;
-							gaussianAlpha[Method.Gaus] = double.Parse(alphaNonParametricTb.Text);
-							gaussianAlpha[Method.GausParamNormal] = double.Parse(alphaParametricTb.Text);
-							gaussianAlpha[Method.GausParamSum] = double.Parse(alphaSummaryTb.Text);
-							dataInterpolation.GaussianAlpha = gaussianAlpha;
+						var gaussianAlpha = dataInterpolation.GaussianAlpha;
+						gaussianAlpha[Method.Gaus] = double.Parse(alphaNonParametricTb.Text);
+						gaussianAlpha[Method.GausParamNormal] = double.Parse(alphaParametricTb.Text);
+						gaussianAlpha[Method.GausParamSum] = double.Parse(alphaSummaryTb.Text);
+						dataInterpolation.GaussianAlpha = gaussianAlpha;
 
-							redrawGraphic(dataInterpolation);
-						}
+						redrawGraphic(dataInterpolation);
+					}
 				}
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message, "COVID19 Error");
@@ -260,7 +256,7 @@ namespace GaussianInterpolationResearch {
 				tmpCurve.Symbol.Size = 7;
 				tmpCurve.Symbol.Fill = new Fill(Color.Red);
 				tmpCurve.Line.IsVisible = false;
-				
+
 				tmpCurve = pane.AddCurve($"Middle_basis = {(testFunction == null ? "" : testFunction.Name)}", basisAndFuncValues.CorrectFuncValuesPoints, Color.Green, SymbolType.TriangleDown);
 				tmpCurve.Symbol.Size = 3;
 				tmpCurve.Symbol.Fill = new Fill(Color.Green);
@@ -496,20 +492,20 @@ namespace GaussianInterpolationResearch {
 				string lineToFind = null;
 				switch (i) {
 					case 0:
-					lineToFind = "basis";
-					break;
+						lineToFind = "basis";
+						break;
 					case 1:
-					lineToFind = "lagrange";
-					break;
+						lineToFind = "lagrange";
+						break;
 					case 2:
-					lineToFind = "non";
-					break;
+						lineToFind = "non";
+						break;
 					case 3:
-					lineToFind = "normal";
-					break;
+						lineToFind = "normal";
+						break;
 					case 4:
-					lineToFind = "summary";
-					break;
+						lineToFind = "summary";
+						break;
 				}
 
 				var curve = zedGraph.GraphPane.CurveList.Where(c => c.Label.Text.ToLower().Contains(lineToFind)).ToList();

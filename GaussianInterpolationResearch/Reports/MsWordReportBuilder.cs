@@ -1,5 +1,4 @@
 ﻿using DataInterpolation;
-using GaussianInterpolationResearch.TestFunctions;
 using Interpolation;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ZedGraph;
 using Word = Microsoft.Office.Interop.Word;
 
 namespace GaussianInterpolationResearch.Reports

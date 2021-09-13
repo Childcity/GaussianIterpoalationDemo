@@ -79,10 +79,10 @@ namespace GaussianInterpolationResearch.TestFunctions {
 			x: (initSpiralRadius + spiralGowthRate * t) * Math.Cos(t), 
 			y: (initSpiralRadius + spiralGowthRate * t) * Math.Sin(t));
 
-		private static double initSpiralRadius = 0.1;
-		private static double finalSpiralRadius = 1;
-		private static double numOfTurns = 2;
-		private static double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
+		private static readonly double initSpiralRadius = 0.01;
+		private static readonly double finalSpiralRadius = 1;
+		private static readonly double numOfTurns = 2;
+		private static readonly double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
 	}
 
 	public class XInPower2 : TestFunctionBase {

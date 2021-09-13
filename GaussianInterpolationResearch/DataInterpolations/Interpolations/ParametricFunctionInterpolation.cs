@@ -40,7 +40,14 @@ namespace DataInterpolation
 
 		public override GaussianMethodAlpha GaussianAlpha
 		{
-			get => XTInterpolation.GaussianAlpha;
+			get {
+				GaussianMethodAlpha gaussianMethodAlpha = new GaussianMethodAlpha();
+				foreach (var item in XTInterpolation.GaussianAlpha) {
+					gaussianMethodAlpha[item.Key] = quadroMiddle(item.Value, YTInterpolation.GaussianAlpha[item.Key]);
+				}
+				return gaussianMethodAlpha;
+				static double quadroMiddle(double x, double y) => System.Math.Sqrt((x * x + y * y) / 2);
+			}
 			set {
 				XTInterpolation.GaussianAlpha = value;
 				YTInterpolation.GaussianAlpha = value;

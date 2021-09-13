@@ -5,6 +5,7 @@ using Interpolation;
 using System;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -100,7 +101,7 @@ namespace GaussianInterpolationResearch
 
 		private async void button1_Click(object sender, EventArgs e)
 		{
-			stepGb.Enabled = false;
+			groupBox3.Enabled = false;
 			ReportInputInfo[] reportData = new ReportInputInfo[testFunctions.Length];
 
 			for (funcIt = 0; funcIt < testFunctions.Length; funcIt++) {
@@ -108,7 +109,7 @@ namespace GaussianInterpolationResearch
 					TestFunctionBase testFunction = testFunctions[funcIt];
 
 					var interpolationStep = stepFixedMode.Checked
-											? (IInterpolationStep)new FixedStep(double.Parse(stepTb.Text))
+											? (IInterpolationStep)new FixedStep(double.Parse(stepTb.Text, CultureInfo.GetCultureInfo("en-US")))
 											: new IncreasingStep(testFunction);
 
 					var dataInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
@@ -158,7 +159,7 @@ namespace GaussianInterpolationResearch
 			}
 
 			autoReportChBx.Checked = false;
-			stepGb.Enabled = true;
+			groupBox3.Enabled = true;
 		}
 
 		private async void button2_Click(object sender, EventArgs e)

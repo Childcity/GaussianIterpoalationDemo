@@ -33,12 +33,12 @@ namespace DataInterpolation
 			return interpolatedPoints;
 		}
 
-		public override GaussianMethodAlpha GaussianAlpha 
-		{ 
-			get => gaussianAlpha; 
-			set { 
+		public override GaussianMethodAlpha GaussianAlpha
+		{
+			get => gaussianAlpha;
+			set {
 				gaussianAlpha = value;
-				makeMethodsAndSetupAlpha(); 
+				makeMethodsAndSetupAlpha();
 			}
 		}
 

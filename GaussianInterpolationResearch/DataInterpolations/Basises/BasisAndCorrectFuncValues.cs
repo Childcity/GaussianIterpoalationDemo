@@ -2,7 +2,7 @@
 
 namespace DataInterpolation
 {
-	public abstract class BasisAndCorrectFuncValues
+	public class BasisAndCorrectFuncValues
 	{
 		public BasisAndCorrectFuncValues(int pointsNumberBetweenBasis = 2)
 		{
@@ -11,8 +11,8 @@ namespace DataInterpolation
 
 		public int PointsNumberBetweenBasis { get; protected set; }
 
-		public PointPairList BasisPoints { get; protected set; }
+		public PointPairList BasisPoints { get; set; }
 
-		public PointPairList CorrectFuncValuesPoints { get; protected set; }
+		public PointPairList CorrectFuncValuesPoints { get; set; }
 	}
 }

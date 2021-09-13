@@ -34,6 +34,8 @@ namespace DataInterpolation
 				XTInterpolation.GetInterpolationMethods()[0],
 				YTInterpolation.GetInterpolationMethods()[0]
 			};
+
+			convertParametricBasisToDescarte2d();
 		}
 
 		public override GaussianMethodAlpha GaussianAlpha
@@ -56,14 +58,29 @@ namespace DataInterpolation
 			var YTInterpolatedPoints = YTInterpolation.BuildInterpolations();
 
 			InterpolatedPointsDict twoDimInterpolation = new InterpolatedPointsDict();
-
 			foreach (var item in XTInterpolatedPoints) {
-				twoDimInterpolation[item.Key] = new PointPairList();
-				item.Value.Zip(YTInterpolatedPoints[item.Key], (first, sec) => new PointPair(first.Y, sec.Y))
-						  .ToList().ForEach(p => twoDimInterpolation[item.Key].Add(p));
+				twoDimInterpolation[item.Key] = parametricToDescarte2d(item.Value, YTInterpolatedPoints[item.Key]);
 			}
-
 			return twoDimInterpolation;
 		}
+
+		private void convertParametricBasisToDescarte2d()
+		{
+			var (XTBasis, YTBasis) = (BasisAndFuncValues[0].BasisPoints, BasisAndFuncValues[1].BasisPoints);
+			var (XTCFV, YTCFV) = (BasisAndFuncValues[0].CorrectFuncValuesPoints, BasisAndFuncValues[1].CorrectFuncValuesPoints);
+
+			BasisAndFuncValues = new BasisAndCorrectFuncValues[] {
+				new BasisAndCorrectFuncValues() {
+					BasisPoints = parametricToDescarte2d(XTBasis, YTBasis),
+					CorrectFuncValuesPoints = parametricToDescarte2d(XTCFV, YTCFV)
+				},
+				null
+			};
+		}
+
+		private PointPairList parametricToDescarte2d(PointPairList xT, PointPairList yT) => new PointPairList(
+			xT.Zip(yT, (first, sec) => first.Y).ToArray(),
+			xT.Zip(yT, (first, sec) => sec.Y).ToArray()
+		);
 	}
 }

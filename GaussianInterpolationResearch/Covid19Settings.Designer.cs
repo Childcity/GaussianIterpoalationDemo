@@ -43,9 +43,10 @@
 			// button1
 			// 
 			this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button1.Location = new System.Drawing.Point(90, 295);
+			this.button1.Location = new System.Drawing.Point(68, 240);
+			this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(82, 29);
+			this.button1.Size = new System.Drawing.Size(62, 24);
 			this.button1.TabIndex = 0;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
@@ -56,10 +57,11 @@
 			this.dateTimePicker1.CustomFormat = "dd-MM-yyyy";
 			this.dateTimePicker1.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-			this.dateTimePicker1.Location = new System.Drawing.Point(105, 12);
+			this.dateTimePicker1.Location = new System.Drawing.Point(79, 10);
+			this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.dateTimePicker1.MinDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
 			this.dateTimePicker1.Name = "dateTimePicker1";
-			this.dateTimePicker1.Size = new System.Drawing.Size(152, 26);
+			this.dateTimePicker1.Size = new System.Drawing.Size(115, 22);
 			this.dateTimePicker1.TabIndex = 1;
 			this.dateTimePicker1.Value = new System.DateTime(2020, 1, 6, 0, 0, 0, 0);
 			// 
@@ -67,9 +69,10 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label1.Location = new System.Drawing.Point(13, 12);
+			this.label1.Location = new System.Drawing.Point(10, 10);
+			this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(63, 25);
+			this.label1.Size = new System.Drawing.Size(50, 20);
 			this.label1.TabIndex = 2;
 			this.label1.Text = "From:";
 			// 
@@ -77,9 +80,10 @@
 			// 
 			this.label2.AutoSize = true;
 			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label2.Location = new System.Drawing.Point(13, 61);
+			this.label2.Location = new System.Drawing.Point(10, 50);
+			this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(42, 25);
+			this.label2.Size = new System.Drawing.Size(31, 20);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "To:";
 			// 
@@ -89,10 +93,11 @@
 			this.dateTimePicker2.CustomFormat = "dd-MM-yyyy";
 			this.dateTimePicker2.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.dateTimePicker2.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-			this.dateTimePicker2.Location = new System.Drawing.Point(105, 60);
+			this.dateTimePicker2.Location = new System.Drawing.Point(79, 49);
+			this.dateTimePicker2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.dateTimePicker2.MinDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
 			this.dateTimePicker2.Name = "dateTimePicker2";
-			this.dateTimePicker2.Size = new System.Drawing.Size(152, 26);
+			this.dateTimePicker2.Size = new System.Drawing.Size(115, 22);
 			this.dateTimePicker2.TabIndex = 1;
 			this.dateTimePicker2.Value = new System.DateTime(2020, 1, 6, 0, 0, 0, 0);
 			// 
@@ -104,18 +109,20 @@
 			this.comboBox1.Items.AddRange(new object[] {
             "General",
             "EveryDay"});
-			this.comboBox1.Location = new System.Drawing.Point(105, 183);
+			this.comboBox1.Location = new System.Drawing.Point(79, 149);
+			this.comboBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(153, 26);
+			this.comboBox1.Size = new System.Drawing.Size(116, 23);
 			this.comboBox1.TabIndex = 3;
 			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
 			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label3.Location = new System.Drawing.Point(12, 183);
+			this.label3.Location = new System.Drawing.Point(9, 149);
+			this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(63, 25);
+			this.label3.Size = new System.Drawing.Size(47, 20);
 			this.label3.TabIndex = 2;
 			this.label3.Text = "Type:";
 			// 
@@ -123,9 +130,10 @@
 			// 
 			this.label4.AutoSize = true;
 			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label4.Location = new System.Drawing.Point(12, 225);
+			this.label4.Location = new System.Drawing.Point(9, 183);
+			this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(87, 25);
+			this.label4.Size = new System.Drawing.Size(68, 20);
 			this.label4.TabIndex = 2;
 			this.label4.Text = "Country:";
 			// 
@@ -135,19 +143,21 @@
 			this.comboBox2.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.comboBox2.FlatStyle = System.Windows.Forms.FlatStyle.System;
 			this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.comboBox2.Location = new System.Drawing.Point(105, 229);
+			this.comboBox2.Location = new System.Drawing.Point(79, 186);
+			this.comboBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.comboBox2.MaxDropDownItems = 30;
 			this.comboBox2.Name = "comboBox2";
-			this.comboBox2.Size = new System.Drawing.Size(153, 26);
+			this.comboBox2.Size = new System.Drawing.Size(116, 23);
 			this.comboBox2.Sorted = true;
 			this.comboBox2.TabIndex = 3;
 			// 
 			// button2
 			// 
 			this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.button2.Location = new System.Drawing.Point(176, 295);
+			this.button2.Location = new System.Drawing.Point(132, 240);
+			this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(82, 29);
+			this.button2.Size = new System.Drawing.Size(62, 24);
 			this.button2.TabIndex = 0;
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
@@ -156,27 +166,34 @@
 			// 
 			this.label5.AutoSize = true;
 			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label5.Location = new System.Drawing.Point(13, 110);
+			this.label5.Location = new System.Drawing.Point(10, 89);
+			this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(130, 25);
+			this.label5.Size = new System.Drawing.Size(104, 20);
 			this.label5.TabIndex = 2;
 			this.label5.Text = "Points Count:";
 			// 
 			// numericUpDown1
 			// 
 			this.numericUpDown1.Enabled = false;
-			this.numericUpDown1.Location = new System.Drawing.Point(187, 110);
+			this.numericUpDown1.Location = new System.Drawing.Point(140, 89);
+			this.numericUpDown1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.numericUpDown1.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
 			this.numericUpDown1.Name = "numericUpDown1";
-			this.numericUpDown1.Size = new System.Drawing.Size(70, 22);
+			this.numericUpDown1.Size = new System.Drawing.Size(52, 20);
 			this.numericUpDown1.TabIndex = 4;
 			// 
 			// Covid19Settings
 			// 
 			this.AcceptButton = this.button1;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.button2;
-			this.ClientSize = new System.Drawing.Size(277, 336);
+			this.ClientSize = new System.Drawing.Size(208, 273);
 			this.ControlBox = false;
 			this.Controls.Add(this.numericUpDown1);
 			this.Controls.Add(this.comboBox2);
@@ -190,6 +207,7 @@
 			this.Controls.Add(this.dateTimePicker1);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
+			this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
 			this.Name = "Covid19Settings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Covid19Settings";

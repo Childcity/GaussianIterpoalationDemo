@@ -70,8 +70,8 @@ namespace Interpolation {
 
         public override PointPair GetPoint(double T)
         {
-            gaussianXt = gaussianXt ?? new GaussianInterpolation(XTArray, Alpha);
-            gaussianYt = gaussianYt ?? new GaussianInterpolation(YTArray, Alpha);
+            gaussianXt ??= new GaussianInterpolation(XTArray, Alpha);
+            gaussianYt ??= new GaussianInterpolation(YTArray, Alpha);
             return new PointPair(gaussianXt.GetPoint(T).Y, gaussianYt.GetPoint(T).Y);
         }
 

@@ -16,6 +16,7 @@ namespace GaussianInterpolationResearch
 	public partial class Form1 : Form
 	{
 		public TestFunctionBase[] testFunctions = new TestFunctionBase[] {
+			new FermatsSpiral(),
 			new ArchimedeanSpiral(),
 			new XInPower2(), new OneByX(), new SqrtX(), new Sqrt3X(),
 			new NaturalLogarithmX(), new Exp0_2X(), new _1_3PowerX(),
@@ -248,7 +249,7 @@ namespace GaussianInterpolationResearch
 				TestFunctionBase testFunction = funcInterpolation?.TestFunction;
 
 				// add basis curve to graphic
-				title = testFunction == null ? "Covid-19 Statistics" : $"Interpolation for y = F({testFunction.Name})";
+				title = testFunction == null ? "Covid-19 Statistics" : $"Interpolation for y = F({testFunction.Name}) {testFunction.Subname}";
 
 				BasisAndCorrectFuncValues basisAndFuncValues = dataInterpolation.GetBasisAndFuncValues()[0];
 

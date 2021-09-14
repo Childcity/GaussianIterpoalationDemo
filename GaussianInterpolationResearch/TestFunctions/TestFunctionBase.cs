@@ -91,13 +91,33 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		public override string Subname { get; protected set; } = "Fermat's spiral";
 		public override double XMin { get; protected set; } = -2 * Math.PI * numOfTurns;
 		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
-		public override PointPair GetValue(double t) => new PointPair(
-			x: (initSpiralRadius + Math.Sqrt(t)) * Math.Cos(t),
-			y: (initSpiralRadius + Math.Sqrt(t)) * Math.Sin(t));
+		public override PointPair GetValue(double t) => 
+			t < 0 ? new PointPair(
+						x: -spiralGowthRate * Math.Sqrt(-t) * Math.Cos(-t),
+						y: -spiralGowthRate * Math.Sqrt(-t) * Math.Sin(-t))
+				  : new PointPair(
+						x: spiralGowthRate * Math.Sqrt(t) * Math.Cos(t),
+						y: spiralGowthRate * Math.Sqrt(t) * Math.Sin(t));
 
-		private static readonly double initSpiralRadius = 0.01;
+		private static readonly double initSpiralRadius = 0.1;
 		private static readonly double finalSpiralRadius = 1;
-		private static readonly double numOfTurns = 2;
+		private static readonly double numOfTurns = 1;
+		private static readonly double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (0.7 * Math.PI * numOfTurns);
+	}
+
+	public class LituusSpiral : ParametricTestFunction
+	{
+		public override string Name { get; protected set; } = "a + Phi^(-1/2)";
+		public override string Subname { get; protected set; } = "Lituus spiral";
+		public override double XMin { get; protected set; } = 0;
+		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
+		public override PointPair GetValue(double t) => new PointPair(
+			x: spiralGowthRate * Math.Pow(t, -0.5) * Math.Cos(t),
+			y: spiralGowthRate * Math.Pow(t, -0.5) * Math.Sin(t));
+
+		private static readonly double initSpiralRadius = 0.1;
+		private static readonly double finalSpiralRadius = 1;
+		private static readonly double numOfTurns = 16;
 		private static readonly double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
 	}
 

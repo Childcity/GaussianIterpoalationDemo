@@ -79,10 +79,10 @@ namespace GaussianInterpolationResearch.TestFunctions {
 			x: (initSpiralRadius + spiralGowthRate * t) * Math.Cos(t), 
 			y: (initSpiralRadius + spiralGowthRate * t) * Math.Sin(t));
 
-		private static readonly double initSpiralRadius = 0.01;
-		private static readonly double finalSpiralRadius = 1;
-		private static readonly double numOfTurns = 2;
-		private static readonly double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
+		private const double initSpiralRadius = 0.01;
+		private const double finalSpiralRadius = 1;
+		private const double numOfTurns = 2;
+		private const double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
 	}
 
 	public class FermatsSpiral : ParametricTestFunction
@@ -99,26 +99,41 @@ namespace GaussianInterpolationResearch.TestFunctions {
 						x: spiralGowthRate * Math.Sqrt(t) * Math.Cos(t),
 						y: spiralGowthRate * Math.Sqrt(t) * Math.Sin(t));
 
-		private static readonly double initSpiralRadius = 0.1;
-		private static readonly double finalSpiralRadius = 1;
-		private static readonly double numOfTurns = 1;
-		private static readonly double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (0.7 * Math.PI * numOfTurns);
+		private const double initSpiralRadius = 0.1;
+		private const double finalSpiralRadius = 1;
+		private const double numOfTurns = 1;
+		private const double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (0.7 * Math.PI * numOfTurns);
 	}
 
 	public class LituusSpiral : ParametricTestFunction
 	{
-		public override string Name { get; protected set; } = "a + Phi^(-1/2)";
+		public override string Name { get; protected set; } = "1 / sqrt(Phi)";
 		public override string Subname { get; protected set; } = "Lituus spiral";
-		public override double XMin { get; protected set; } = 0;
+		public override double XMin { get; protected set; } = 0.5;
 		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
 		public override PointPair GetValue(double t) => new PointPair(
-			x: spiralGowthRate * Math.Pow(t, -0.5) * Math.Cos(t),
-			y: spiralGowthRate * Math.Pow(t, -0.5) * Math.Sin(t));
+			x: 1 / Math.Sqrt(t) * Math.Cos(t),
+			y: 1 / Math.Sqrt(t) * Math.Sin(t));
 
-		private static readonly double initSpiralRadius = 0.1;
-		private static readonly double finalSpiralRadius = 1;
-		private static readonly double numOfTurns = 16;
-		private static readonly double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
+		private const double numOfTurns = 3;
+	}
+
+	public class HyperbolicSpiral : ParametricTestFunction
+	{
+		public override string Name { get; protected set; } = "a / Phi";
+		public override string Subname { get; protected set; } = "Hyperbolic spiral";
+		public override double XMin { get; protected set; } = -2 * Math.PI * numOfTurns;
+		public override double XMax { get; protected set; } = 0 * Math.PI * numOfTurns;
+		public override PointPair GetValue(double t) =>
+			t < 0 ? new PointPair(
+						x: 1 / -1 * (t - XMin) * Math.Cos(-1*(t - XMin)),
+						y: 1 / -1 * (t - XMin) * Math.Sin(-1 * (t - XMin)))
+				  : new PointPair(
+						x: 1 / t * Math.Cos(t),
+						y: 1 / t * Math.Sin(t));
+
+		private const double numOfTurns = 1;
+		private const double spiralGowthRate = 1;
 	}
 
 	public class XInPower2 : TestFunctionBase {

@@ -16,9 +16,8 @@ namespace GaussianInterpolationResearch
 	public partial class Form1 : Form
 	{
 		public TestFunctionBase[] testFunctions = new TestFunctionBase[] {
-			new LituusSpiral(),
-			new FermatsSpiral(),
-			new ArchimedeanSpiral(),
+			new HyperbolicSpiral(), new LituusSpiral(),
+			new FermatsSpiral(), new ArchimedeanSpiral(),
 			new XInPower2(), new OneByX(), new SqrtX(), new Sqrt3X(),
 			new NaturalLogarithmX(), new Exp0_2X(), new _1_3PowerX(),
 			new SinX(), new ArcSinX(), new ArcTgX(),
@@ -220,6 +219,9 @@ namespace GaussianInterpolationResearch
 		private void redrawGraphic(IDataInterpolation dataInterpolation)
 		{
 			GraphPane pane = zedGraph.GraphPane;
+			if (pane == null) {
+				return;
+			}
 
 			pane.CurveList.Clear();
 

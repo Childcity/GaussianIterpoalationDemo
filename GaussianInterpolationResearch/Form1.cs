@@ -16,6 +16,7 @@ namespace GaussianInterpolationResearch
 	public partial class Form1 : Form
 	{
 		public TestFunctionBase[] testFunctions = new TestFunctionBase[] {
+			new LogarithmicSpiral(), 
 			new HyperbolicSpiral(), new LituusSpiral(),
 			new FermatsSpiral(), new ArchimedeanSpiral(),
 			new XInPower2(), new OneByX(), new SqrtX(), new Sqrt3X(),

@@ -122,18 +122,34 @@ namespace GaussianInterpolationResearch.TestFunctions {
 	{
 		public override string Name { get; protected set; } = "a / Phi";
 		public override string Subname { get; protected set; } = "Hyperbolic spiral";
-		public override double XMin { get; protected set; } = -2 * Math.PI * numOfTurns;
-		public override double XMax { get; protected set; } = 0 * Math.PI * numOfTurns;
-		public override PointPair GetValue(double t) =>
-			t < 0 ? new PointPair(
-						x: 1 / -1 * (t - XMin) * Math.Cos(-1*(t - XMin)),
-						y: 1 / -1 * (t - XMin) * Math.Sin(-1 * (t - XMin)))
-				  : new PointPair(
-						x: 1 / t * Math.Cos(t),
-						y: 1 / t * Math.Sin(t));
+		public override double XMin { get; protected set; } = 0 * Math.PI * numOfTurns;
+		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
+		public override PointPair GetValue(double t)
+		{
+			if (t > -0.2 && t < 0.2) 
+				return new PointPair(GetValue(0.2));
+			t = t < 0 ? (-(t - XMin + 0.001)) : t;
+			return new PointPair(
+						x: 1 / (t + 0.001) * Math.Cos(t),
+						y: 1 / (t + 0.001) * Math.Sin(t));
+		}
 
-		private const double numOfTurns = 1;
-		private const double spiralGowthRate = 1;
+		private const double numOfTurns = 3;
+	}
+
+	public class LogarithmicSpiral : ParametricTestFunction
+	{
+		public override string Name { get; protected set; } = "a * e^(b*Phi)";
+		public override string Subname { get; protected set; } = "Logarithmic spiral";
+		public override double XMin { get; protected set; } = 0;
+		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
+		public override PointPair GetValue(double t) => new PointPair(
+			x: alpha * Math.Exp(betta * t) * Math.Cos(t),
+			y: alpha * Math.Exp(betta * t) * Math.Sin(t));
+
+		private const double numOfTurns = 5;
+		private const double alpha = 0.02;
+		private const double betta = 0.1;
 	}
 
 	public class XInPower2 : TestFunctionBase {

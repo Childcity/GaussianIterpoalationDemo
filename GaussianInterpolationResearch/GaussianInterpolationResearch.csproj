@@ -162,6 +162,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\MsWordReportBuilder.cs" />
+    <Compile Include="TestFunctions\Extension.cs" />
     <Compile Include="TestFunctions\TestFunctionBase.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Covid19Settings.resx">

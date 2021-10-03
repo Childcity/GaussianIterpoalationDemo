@@ -16,6 +16,7 @@ namespace GaussianInterpolationResearch
 	public partial class Form1 : Form
 	{
 		private TestFunctionBase[] testFunctions = new TestFunctionBase[] {
+			//new TheodorusSpiral(),
 			new EulerSpiral(), new LogarithmicSpiral(), 
 			new HyperbolicSpiral(), new LituusSpiral(),
 			new FermatsSpiral(), new ArchimedeanSpiral(),
@@ -38,13 +39,7 @@ namespace GaussianInterpolationResearch
 					}
 				}
 
-				if (x.step is IncreasingStep xIS) {
-					if (y.step is IncreasingStep yIS) {
-						return true;
-					}
-				}
-
-				return false;
+				return x.step is IncreasingStep && y.step is IncreasingStep;
 			}
 			public static bool operator !=(StepModel x, StepModel y)
 			{
@@ -131,7 +126,6 @@ namespace GaussianInterpolationResearch
 
 		private async void button1_Click(object sender, EventArgs e)
 		{
-			//groupBox3.Enabled = false;
 			ReportInputInfo[] reportData = new ReportInputInfo[testFunctions.Length];
 
 			for (funcIt = 0; funcIt < testFunctions.Length; funcIt++) {
@@ -191,7 +185,6 @@ namespace GaussianInterpolationResearch
 			}
 
 			autoReportChBx.Checked = false;
-			//groupBox3.Enabled = true;
 		}
 
 		private async void button2_Click(object sender, EventArgs e)

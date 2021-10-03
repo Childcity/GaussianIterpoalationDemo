@@ -163,15 +163,15 @@ namespace GaussianInterpolationResearch.TestFunctions {
 
 		static EulerSpiral() => initCache();
 
-		public override string Name { get; protected set; } = "";
-		public override string Subname { get; protected set; } = "Euler spiral (Clothoid)";
+		public override string Name { get; protected set; }
+		public override string Subname { get; protected set; } = "Clothoid (Euler spiral)";
 		public override double XMin { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Min(i => cacheXY[i, X]);
 		public override double XMax { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Max(i => cacheXY[i, X]);
 
 		private static void initCache()
 		{
-			const double dt = T / (double)N;
-			double t = 0;
+			const double dt = T / (double)N; // Distance delta
+			double t = 0; // Distance, that grow with each iteration
 
 			(double zeroDx, double zeroDy) = getClothoid(t, dt);
 			cacheXY[0, X] = zeroDx;
@@ -189,15 +189,68 @@ namespace GaussianInterpolationResearch.TestFunctions {
 
 		public override PointPair GetValue(double t)
 		{
-			double normalizedT = normalize(t, XMin, XMax);
-			int curvePointIndex = (int)fromNormalizedToScale(normalizedT, 0, N - 1);
+			double normalizedT = t.Normalize(XMin, XMax);
+			int curvePointIndex = (int)normalizedT.FromNormalizedToScale(0, N - 1);
 			return new PointPair(
 				cacheXY[curvePointIndex, X], 
 				cacheXY[curvePointIndex, Y]
 			);
+		}
+	}
 
-			static double normalize(double value, double min, double max) { return (value - min) / (max - min); }
-			static double fromNormalizedToScale(double value, double min, double max) { return (max - min) * value + min; }
+	public class GoldenSpiral : ParametricTestFunction
+	{
+		public override string Name { get; protected set; } = "";
+		public override string Subname { get; protected set; } = "Golden spiral (Fibonacci)";
+		public override double XMin { get; protected set; } = 0;
+		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
+		public override PointPair GetValue(double t) => new PointPair(
+			x: alpha * Math.Exp(betta * t) * Math.Cos(t),
+			y: alpha * Math.Exp(betta * t) * Math.Sin(t));
+
+		private const double numOfTurns = 5;
+		private const double alpha = 0.02;
+		private const double betta = 0.1;
+	}
+
+	public class TheodorusSpiral : ParametricTestFunction
+	{
+		private const int trianglesNumber = 9;
+		private const int X = 0, Y = 1;
+		private static readonly double[,] cacheXY = new double[trianglesNumber + 1, 2];
+
+		static TheodorusSpiral() => initCache();
+
+		public override string Name { get; protected set; } = "";
+		public override string Subname { get; protected set; } = "Theodorus spiral";
+		public override double XMin { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Min(i => cacheXY[i, X]);
+		public override double XMax { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Max(i => cacheXY[i, X]);
+
+		private static void initCache()
+		{
+			// Find the edge points.
+
+			// Add the first point.
+			double t = 0; // Keeps track of the angle that the points make with respect to the spiral’s center
+
+			// Find the leading edge point for each triangle
+			for (int i = 1; i <= trianglesNumber; i++) {
+				double radius = Math.Sqrt(i);
+				cacheXY[i, X] = radius * Math.Cos(t);
+				cacheXY[i, Y] = radius * Math.Sin(t);
+
+				t -= Math.Atan2(1, radius);
+			}
+		}
+
+		public override PointPair GetValue(double t)
+		{
+			double normalizedT = Extension.Normalize(t, XMin, XMax);
+			int curvePointIndex = (int)normalizedT.FromNormalizedToScale(0, cacheXY.GetLength(0) - 1);
+			return new PointPair(
+				cacheXY[curvePointIndex, X],
+				cacheXY[curvePointIndex, Y]
+			);
 		}
 	}
 

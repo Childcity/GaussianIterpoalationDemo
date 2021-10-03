@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ZedGraph;
 
 namespace GaussianInterpolationResearch.TestFunctions {
@@ -24,8 +25,8 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		*/
 
 	public abstract class TestFunctionBase {
-		private double miniStep;
 		private int pointsCount;
+		protected double miniStep;
 
 		protected TestFunctionBase() => PointsCount = 15;
 		public abstract string Name { get; protected set; }
@@ -150,6 +151,54 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		private const double numOfTurns = 5;
 		private const double alpha = 0.02;
 		private const double betta = 0.1;
+	}
+
+	public class EulerSpiral : ParametricTestFunction
+	{
+		private const int T = 4; // Influence on turns number
+		private const int N = 10000;
+		private const int scale = 20;
+		private const int X = 0, Y = 1;
+		private static readonly double[,] cacheXY = new double[N, 2];
+
+		static EulerSpiral() => initCache();
+
+		public override string Name { get; protected set; } = "";
+		public override string Subname { get; protected set; } = "Euler spiral (Clothoid)";
+		public override double XMin { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Min(i => cacheXY[i, X]);
+		public override double XMax { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Max(i => cacheXY[i, X]);
+
+		private static void initCache()
+		{
+			const double dt = T / (double)N;
+			double t = 0;
+
+			(double zeroDx, double zeroDy) = getClothoid(t, dt);
+			cacheXY[0, X] = zeroDx;
+			cacheXY[0, Y] = zeroDy;
+			t += dt;
+
+			for (int i = 1; i < N; i++, t += dt) {
+				(double dx, double dy) = getClothoid(t, dt);
+				cacheXY[i, X] = cacheXY[i - 1, X] + dx * scale;
+				cacheXY[i, Y] = cacheXY[i - 1, Y] + dy * scale;
+			}
+
+			static (double dx, double dy) getClothoid(double t, double dt) => (dt * Math.Cos(t * t), dt * Math.Sin(t * t));
+		}
+
+		public override PointPair GetValue(double t)
+		{
+			double normalizedT = normalize(t, XMin, XMax);
+			int curvePointIndex = (int)fromNormalizedToScale(normalizedT, 0, N - 1);
+			return new PointPair(
+				cacheXY[curvePointIndex, X], 
+				cacheXY[curvePointIndex, Y]
+			);
+
+			static double normalize(double value, double min, double max) { return (value - min) / (max - min); }
+			static double fromNormalizedToScale(double value, double min, double max) { return (max - min) * value + min; }
+		}
 	}
 
 	public class XInPower2 : TestFunctionBase {

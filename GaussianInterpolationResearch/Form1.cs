@@ -15,8 +15,8 @@ namespace GaussianInterpolationResearch
 {
 	public partial class Form1 : Form
 	{
-		public TestFunctionBase[] testFunctions = new TestFunctionBase[] {
-			new LogarithmicSpiral(), 
+		private TestFunctionBase[] testFunctions = new TestFunctionBase[] {
+			new EulerSpiral(), new LogarithmicSpiral(), 
 			new HyperbolicSpiral(), new LituusSpiral(),
 			new FermatsSpiral(), new ArchimedeanSpiral(),
 			new XInPower2(), new OneByX(), new SqrtX(), new Sqrt3X(),
@@ -26,16 +26,40 @@ namespace GaussianInterpolationResearch
 			new CosecHX(), new SecHX(), new ArcSecHX()
 		};
 
-		private const double alphaStep = 1000;
-		private const int pointsBetweenBasisNumber = 2;
-		private static double countAlpha(int iter, int size, double xMin, double xMax)
+		private struct StepModel
 		{
-			return Math.PI * size / ((xMax - xMin) * (xMax - xMin));
+			private readonly IInterpolationStep step;
+			public StepModel(IInterpolationStep s) => step = s;
+			public static bool operator ==(StepModel x, StepModel y)
+			{
+				if (x.step is FixedStep xFS) {
+					if (y.step is FixedStep yFS) {
+						return xFS.Get(0) == yFS.Get(0);
+					}
+				}
+
+				if (x.step is IncreasingStep xIS) {
+					if (y.step is IncreasingStep yIS) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+			public static bool operator !=(StepModel x, StepModel y)
+			{
+				return !(x == y);
+			}
+			public IInterpolationStep Get() => step;
+			public bool isValid() => step != null && step.Get(0) > 0;
 		}
+
+		private const double alphaStep = 1000;
 
 		private string xAxis = "--- > X", yAxis = "--- > Y(x)";
 		private string title = "";
 		private int funcIt = 0;
+		private StepModel curStepType;
 		Covid19Settings covidSett;
 
 		public Form1()
@@ -101,20 +125,21 @@ namespace GaussianInterpolationResearch
 			}
 		}
 
+		private IInterpolationStep getStepType(TestFunctionBase testFunction) => stepFixedMode.Checked
+								? new FixedStep(double.Parse(stepTb.Text, CultureInfo.GetCultureInfo("en-US")))
+								: (IInterpolationStep) new IncreasingStep(testFunction);
+
 		private async void button1_Click(object sender, EventArgs e)
 		{
-			groupBox3.Enabled = false;
+			//groupBox3.Enabled = false;
 			ReportInputInfo[] reportData = new ReportInputInfo[testFunctions.Length];
 
 			for (funcIt = 0; funcIt < testFunctions.Length; funcIt++) {
 				try {
 					TestFunctionBase testFunction = testFunctions[funcIt];
 
-					var interpolationStep = stepFixedMode.Checked
-											? (IInterpolationStep)new FixedStep(double.Parse(stepTb.Text, CultureInfo.GetCultureInfo("en-US")))
-											: new IncreasingStep(testFunction);
-
-					var dataInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
+					curStepType = new StepModel(getStepType(testFunction));
+					var dataInterpolation = DataInterpolationFactory.GetInstance(testFunction, curStepType.Get());
 
 					alphaNonParametricTb.Text = dataInterpolation.GaussianAlpha[Method.Gaus].ToDoubString();
 					alphaParametricTb.Text = dataInterpolation.GaussianAlpha[Method.GausParamNormal].ToDoubString();
@@ -127,10 +152,15 @@ namespace GaussianInterpolationResearch
 						await Task.Delay(1000);
 						if (!standartFunctionMode.Checked)
 							return;
+						var newStepType = curStepType;
+						try { newStepType = new StepModel(getStepType(testFunction)); } catch (FormatException) {}
 						if (double.Parse(alphaNonParametricTb.Text) != dataInterpolation.GaussianAlpha[Method.Gaus]
 							|| double.Parse(alphaParametricTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamNormal]
-							|| double.Parse(alphaSummaryTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamSum]) {
-							dataInterpolation = DataInterpolationFactory.GetInstance(testFunction, interpolationStep);
+							|| double.Parse(alphaSummaryTb.Text) != dataInterpolation.GaussianAlpha[Method.GausParamSum]
+							|| newStepType.isValid() && curStepType != newStepType
+							) {
+							curStepType = newStepType;
+							dataInterpolation = DataInterpolationFactory.GetInstance(testFunction, curStepType.Get());
 
 							var gaussianAlpha = dataInterpolation.GaussianAlpha;
 							gaussianAlpha[Method.Gaus] = double.Parse(alphaNonParametricTb.Text);
@@ -161,7 +191,7 @@ namespace GaussianInterpolationResearch
 			}
 
 			autoReportChBx.Checked = false;
-			groupBox3.Enabled = true;
+			//groupBox3.Enabled = true;
 		}
 
 		private async void button2_Click(object sender, EventArgs e)

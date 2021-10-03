@@ -82,7 +82,7 @@
 			this.zedGraph.IsShowPointValues = true;
 			this.zedGraph.IsZoomOnMouseCenter = true;
 			this.zedGraph.Location = new System.Drawing.Point(4, 4);
-			this.zedGraph.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+			this.zedGraph.Margin = new System.Windows.Forms.Padding(4);
 			this.zedGraph.Name = "zedGraph";
 			this.zedGraph.ScrollGrace = 0D;
 			this.zedGraph.ScrollMaxX = 0D;
@@ -106,7 +106,7 @@
 			this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
 			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -133,7 +133,7 @@
 			this.panel1.Controls.Add(this.progressBar1);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.panel1.Location = new System.Drawing.Point(644, 2);
-			this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.panel1.Margin = new System.Windows.Forms.Padding(2);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(408, 680);
 			this.panel1.TabIndex = 2;
@@ -152,7 +152,7 @@
             "Gaus Parametric Normal",
             "Gaus Parametric Summary"});
 			this.methodChooser.Location = new System.Drawing.Point(16, 193);
-			this.methodChooser.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.methodChooser.Margin = new System.Windows.Forms.Padding(2);
 			this.methodChooser.Name = "methodChooser";
 			this.methodChooser.Size = new System.Drawing.Size(238, 120);
 			this.methodChooser.TabIndex = 2;
@@ -167,9 +167,9 @@
 			this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold);
 			this.groupBox3.ForeColor = System.Drawing.SystemColors.ControlText;
 			this.groupBox3.Location = new System.Drawing.Point(9, 7);
-			this.groupBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox3.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox3.Padding = new System.Windows.Forms.Padding(2);
 			this.groupBox3.Size = new System.Drawing.Size(392, 120);
 			this.groupBox3.TabIndex = 13;
 			this.groupBox3.TabStop = false;
@@ -183,9 +183,9 @@
 			this.stepGb.Controls.Add(this.stepAutoMode);
 			this.stepGb.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold);
 			this.stepGb.Location = new System.Drawing.Point(24, 52);
-			this.stepGb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.stepGb.Margin = new System.Windows.Forms.Padding(2);
 			this.stepGb.Name = "stepGb";
-			this.stepGb.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.stepGb.Padding = new System.Windows.Forms.Padding(2);
 			this.stepGb.Size = new System.Drawing.Size(157, 63);
 			this.stepGb.TabIndex = 1;
 			this.stepGb.TabStop = false;
@@ -195,17 +195,17 @@
 			// 
 			this.stepTb.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
 			this.stepTb.Location = new System.Drawing.Point(109, 37);
-			this.stepTb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.stepTb.Margin = new System.Windows.Forms.Padding(2);
 			this.stepTb.Name = "stepTb";
 			this.stepTb.Size = new System.Drawing.Size(44, 23);
 			this.stepTb.TabIndex = 2;
-			this.stepTb.Text = "0,2";
+			this.stepTb.Text = "2";
 			// 
 			// stepFixedMode
 			// 
 			this.stepFixedMode.AutoSize = true;
 			this.stepFixedMode.Location = new System.Drawing.Point(9, 40);
-			this.stepFixedMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.stepFixedMode.Margin = new System.Windows.Forms.Padding(2);
 			this.stepFixedMode.Name = "stepFixedMode";
 			this.stepFixedMode.Size = new System.Drawing.Size(55, 17);
 			this.stepFixedMode.TabIndex = 1;
@@ -217,7 +217,7 @@
 			this.stepAutoMode.AutoSize = true;
 			this.stepAutoMode.Checked = true;
 			this.stepAutoMode.Location = new System.Drawing.Point(9, 18);
-			this.stepAutoMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.stepAutoMode.Margin = new System.Windows.Forms.Padding(2);
 			this.stepAutoMode.Name = "stepAutoMode";
 			this.stepAutoMode.Size = new System.Drawing.Size(84, 17);
 			this.stepAutoMode.TabIndex = 0;
@@ -231,7 +231,7 @@
 			this.covid19Mode.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.covid19Mode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
 			this.covid19Mode.Location = new System.Drawing.Point(212, 27);
-			this.covid19Mode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.covid19Mode.Margin = new System.Windows.Forms.Padding(2);
 			this.covid19Mode.Name = "covid19Mode";
 			this.covid19Mode.Size = new System.Drawing.Size(150, 21);
 			this.covid19Mode.TabIndex = 0;
@@ -246,7 +246,7 @@
 			this.standartFunctionMode.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.standartFunctionMode.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
 			this.standartFunctionMode.Location = new System.Drawing.Point(24, 27);
-			this.standartFunctionMode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.standartFunctionMode.Margin = new System.Windows.Forms.Padding(2);
 			this.standartFunctionMode.Name = "standartFunctionMode";
 			this.standartFunctionMode.Size = new System.Drawing.Size(143, 21);
 			this.standartFunctionMode.TabIndex = 0;
@@ -269,9 +269,9 @@
 			this.groupBox2.Controls.Add(this.autoReportChBx);
 			this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.groupBox2.Location = new System.Drawing.Point(9, 125);
-			this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
 			this.groupBox2.Size = new System.Drawing.Size(395, 232);
 			this.groupBox2.TabIndex = 12;
 			this.groupBox2.TabStop = false;
@@ -347,7 +347,7 @@
 			// 
 			this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.button1.Location = new System.Drawing.Point(4, 196);
-			this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.button1.Margin = new System.Windows.Forms.Padding(2);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(64, 29);
 			this.button1.TabIndex = 1;
@@ -361,7 +361,7 @@
 			this.exportToWordCB.AutoSize = true;
 			this.exportToWordCB.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.exportToWordCB.Location = new System.Drawing.Point(272, 203);
-			this.exportToWordCB.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.exportToWordCB.Margin = new System.Windows.Forms.Padding(2);
 			this.exportToWordCB.Name = "exportToWordCB";
 			this.exportToWordCB.Size = new System.Drawing.Size(124, 20);
 			this.exportToWordCB.TabIndex = 10;
@@ -374,7 +374,7 @@
 			this.checkBox1.AutoSize = true;
 			this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.checkBox1.Location = new System.Drawing.Point(73, 203);
-			this.checkBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.checkBox1.Margin = new System.Windows.Forms.Padding(2);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(49, 20);
 			this.checkBox1.TabIndex = 6;
@@ -387,7 +387,7 @@
 			this.autoReportChBx.AutoSize = true;
 			this.autoReportChBx.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.autoReportChBx.Location = new System.Drawing.Point(121, 203);
-			this.autoReportChBx.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.autoReportChBx.Margin = new System.Windows.Forms.Padding(2);
 			this.autoReportChBx.Name = "autoReportChBx";
 			this.autoReportChBx.Size = new System.Drawing.Size(49, 20);
 			this.autoReportChBx.TabIndex = 6;
@@ -401,9 +401,9 @@
 			this.groupBox1.Enabled = false;
 			this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.groupBox1.Location = new System.Drawing.Point(9, 362);
-			this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
 			this.groupBox1.Size = new System.Drawing.Size(392, 67);
 			this.groupBox1.TabIndex = 12;
 			this.groupBox1.TabStop = false;
@@ -414,7 +414,7 @@
 			// 
 			this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.button2.Location = new System.Drawing.Point(147, 27);
-			this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.button2.Margin = new System.Windows.Forms.Padding(2);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(79, 32);
 			this.button2.TabIndex = 0;
@@ -475,7 +475,7 @@
 			this.alphaSummaryTrBar.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.alphaSummaryTrBar.LargeChange = 50;
 			this.alphaSummaryTrBar.Location = new System.Drawing.Point(9, 600);
-			this.alphaSummaryTrBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.alphaSummaryTrBar.Margin = new System.Windows.Forms.Padding(2);
 			this.alphaSummaryTrBar.Maximum = 20000;
 			this.alphaSummaryTrBar.Name = "alphaSummaryTrBar";
 			this.alphaSummaryTrBar.Size = new System.Drawing.Size(310, 45);
@@ -487,7 +487,7 @@
 			// 
 			this.alphaSummaryTb.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.alphaSummaryTb.Location = new System.Drawing.Point(324, 608);
-			this.alphaSummaryTb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.alphaSummaryTb.Margin = new System.Windows.Forms.Padding(2);
 			this.alphaSummaryTb.Name = "alphaSummaryTb";
 			this.alphaSummaryTb.Size = new System.Drawing.Size(81, 24);
 			this.alphaSummaryTb.TabIndex = 7;
@@ -498,7 +498,7 @@
 			this.alphaParametricTrBar.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.alphaParametricTrBar.LargeChange = 50;
 			this.alphaParametricTrBar.Location = new System.Drawing.Point(9, 540);
-			this.alphaParametricTrBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.alphaParametricTrBar.Margin = new System.Windows.Forms.Padding(2);
 			this.alphaParametricTrBar.Maximum = 20000;
 			this.alphaParametricTrBar.Name = "alphaParametricTrBar";
 			this.alphaParametricTrBar.Size = new System.Drawing.Size(310, 45);
@@ -510,7 +510,7 @@
 			// 
 			this.alphaParametricTb.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.alphaParametricTb.Location = new System.Drawing.Point(324, 547);
-			this.alphaParametricTb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.alphaParametricTb.Margin = new System.Windows.Forms.Padding(2);
 			this.alphaParametricTb.Name = "alphaParametricTb";
 			this.alphaParametricTb.Size = new System.Drawing.Size(81, 24);
 			this.alphaParametricTb.TabIndex = 7;
@@ -522,7 +522,7 @@
 			this.alphaNonParametricTrBar.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.alphaNonParametricTrBar.LargeChange = 50;
 			this.alphaNonParametricTrBar.Location = new System.Drawing.Point(9, 479);
-			this.alphaNonParametricTrBar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.alphaNonParametricTrBar.Margin = new System.Windows.Forms.Padding(2);
 			this.alphaNonParametricTrBar.Maximum = 20000;
 			this.alphaNonParametricTrBar.Name = "alphaNonParametricTrBar";
 			this.alphaNonParametricTrBar.Size = new System.Drawing.Size(310, 45);
@@ -534,7 +534,7 @@
 			// 
 			this.alphaNonParametricTb.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.alphaNonParametricTb.Location = new System.Drawing.Point(324, 487);
-			this.alphaNonParametricTb.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.alphaNonParametricTb.Margin = new System.Windows.Forms.Padding(2);
 			this.alphaNonParametricTb.Name = "alphaNonParametricTb";
 			this.alphaNonParametricTb.Size = new System.Drawing.Size(81, 24);
 			this.alphaNonParametricTb.TabIndex = 7;
@@ -543,7 +543,7 @@
 			// progressBar1
 			// 
 			this.progressBar1.Location = new System.Drawing.Point(9, 653);
-			this.progressBar1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.progressBar1.Margin = new System.Windows.Forms.Padding(2);
 			this.progressBar1.MarqueeAnimationSpeed = 10;
 			this.progressBar1.Name = "progressBar1";
 			this.progressBar1.Size = new System.Drawing.Size(392, 19);
@@ -558,7 +558,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1054, 684);
 			this.Controls.Add(this.tableLayoutPanel1);
-			this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "Form1";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

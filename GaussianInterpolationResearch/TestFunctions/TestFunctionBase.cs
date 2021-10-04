@@ -72,6 +72,11 @@ namespace GaussianInterpolationResearch.TestFunctions {
 	}
 
 	public class ArchimedeanSpiral : ParametricTestFunction {
+		private const double initSpiralRadius = 0.01;
+		private const double finalSpiralRadius = 1;
+		private const double numOfTurns = 2;
+		private const double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
+		
 		public override string Name { get; protected set; } = "a + b*Phi";
 		public override string Subname { get; protected set; } = "Archimedean Spiral";
 		public override double XMin { get; protected set; } = 0;
@@ -79,15 +84,14 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		public override PointPair GetValue(double t) => new PointPair(
 			x: (initSpiralRadius + spiralGowthRate * t) * Math.Cos(t), 
 			y: (initSpiralRadius + spiralGowthRate * t) * Math.Sin(t));
+}
 
-		private const double initSpiralRadius = 0.01;
+	public class FermatsSpiral : ParametricTestFunction {
+		private const double initSpiralRadius = 0.1;
 		private const double finalSpiralRadius = 1;
-		private const double numOfTurns = 2;
-		private const double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (2 * Math.PI * numOfTurns);
-	}
+		private const double numOfTurns = 1;
+		private const double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (0.7 * Math.PI * numOfTurns);
 
-	public class FermatsSpiral : ParametricTestFunction
-	{
 		public override string Name { get; protected set; } = "a * sqrt(Phi)";
 		public override string Subname { get; protected set; } = "Fermat's spiral";
 		public override double XMin { get; protected set; } = -2 * Math.PI * numOfTurns;
@@ -100,14 +104,11 @@ namespace GaussianInterpolationResearch.TestFunctions {
 						x: spiralGowthRate * Math.Sqrt(t) * Math.Cos(t),
 						y: spiralGowthRate * Math.Sqrt(t) * Math.Sin(t));
 
-		private const double initSpiralRadius = 0.1;
-		private const double finalSpiralRadius = 1;
-		private const double numOfTurns = 1;
-		private const double spiralGowthRate = (finalSpiralRadius - initSpiralRadius) / (0.7 * Math.PI * numOfTurns);
-	}
+		}
 
-	public class LituusSpiral : ParametricTestFunction
-	{
+	public class LituusSpiral : ParametricTestFunction {
+		private const double numOfTurns = 3;
+
 		public override string Name { get; protected set; } = "1 / sqrt(Phi)";
 		public override string Subname { get; protected set; } = "Lituus spiral";
 		public override double XMin { get; protected set; } = 0.5;
@@ -115,12 +116,9 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		public override PointPair GetValue(double t) => new PointPair(
 			x: 1 / Math.Sqrt(t) * Math.Cos(t),
 			y: 1 / Math.Sqrt(t) * Math.Sin(t));
-
-		private const double numOfTurns = 3;
 	}
 
-	public class HyperbolicSpiral : ParametricTestFunction
-	{
+	public class HyperbolicSpiral : ParametricTestFunction {
 		public override string Name { get; protected set; } = "a / Phi";
 		public override string Subname { get; protected set; } = "Hyperbolic spiral";
 		public override double XMin { get; protected set; } = 0 * Math.PI * numOfTurns;
@@ -138,8 +136,11 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		private const double numOfTurns = 3;
 	}
 
-	public class LogarithmicSpiral : ParametricTestFunction
-	{
+	public class LogarithmicSpiral : ParametricTestFunction	{
+		private const double numOfTurns = 5;
+		private const double alpha = 0.02;
+		private const double betta = 0.1;
+
 		public override string Name { get; protected set; } = "a * e^(b*Phi)";
 		public override string Subname { get; protected set; } = "Logarithmic spiral";
 		public override double XMin { get; protected set; } = 0;
@@ -147,26 +148,17 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		public override PointPair GetValue(double t) => new PointPair(
 			x: alpha * Math.Exp(betta * t) * Math.Cos(t),
 			y: alpha * Math.Exp(betta * t) * Math.Sin(t));
-
-		private const double numOfTurns = 5;
-		private const double alpha = 0.02;
-		private const double betta = 0.1;
 	}
 
-	public class EulerSpiral : ParametricTestFunction
-	{
+	public class EulerSpiral : ParametricTestFunction {
 		private const int T = 4; // Influence on turns number
 		private const int N = 10000;
 		private const int scale = 20;
+
 		private const int X = 0, Y = 1;
 		private static readonly double[,] cacheXY = new double[N, 2];
 
 		static EulerSpiral() => initCache();
-
-		public override string Name { get; protected set; }
-		public override string Subname { get; protected set; } = "Clothoid (Euler spiral)";
-		public override double XMin { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Min(i => cacheXY[i, X]);
-		public override double XMax { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Max(i => cacheXY[i, X]);
 
 		private static void initCache()
 		{
@@ -184,8 +176,16 @@ namespace GaussianInterpolationResearch.TestFunctions {
 				cacheXY[i, Y] = cacheXY[i - 1, Y] + dy * scale;
 			}
 
-			static (double dx, double dy) getClothoid(double t, double dt) => (dt * Math.Cos(t * t), dt * Math.Sin(t * t));
+			static (double dx, double dy) getClothoid(double t, double dt) => (
+				dx: dt * Math.Cos(t * t), 
+				dy: dt * Math.Sin(t * t)
+			);
 		}
+
+		public override string Name { get; protected set; }
+		public override string Subname { get; protected set; } = "Clothoid (Euler spiral)";
+		public override double XMin { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Min(i => cacheXY[i, X]);
+		public override double XMax { get; protected set; } = Enumerable.Range(0, cacheXY.GetLength(0)).Max(i => cacheXY[i, X]);
 
 		public override PointPair GetValue(double t)
 		{
@@ -198,23 +198,33 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		}
 	}
 
-	public class GoldenSpiral : ParametricTestFunction
-	{
+	public class GoldenSpiral : ParametricTestFunction { 
+		private const double numOfTurns = 3;
+		private const double alpha = 0.12;
+		private const double thetta = 76; // Tangential angle about 76 degree
+		private readonly double pow = thetta.Rad() / (3 * Math.PI / 5);
+
 		public override string Name { get; protected set; } = "";
 		public override string Subname { get; protected set; } = "Golden spiral (Fibonacci)";
 		public override double XMin { get; protected set; } = 0;
 		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
 		public override PointPair GetValue(double t) => new PointPair(
-			x: alpha * Math.Exp(betta * t) * Math.Cos(t),
-			y: alpha * Math.Exp(betta * t) * Math.Sin(t));
-
-		private const double numOfTurns = 5;
-		private const double alpha = 0.02;
-		private const double betta = 0.1;
+			x: alpha * Math.Pow(t, pow) * Math.Cos(t),
+			y: alpha * Math.Pow(t, pow) * Math.Sin(t));
 	}
-
-	public class TheodorusSpiral : ParametricTestFunction
+	public class GoldenSpiralX : TestFunctionBase
 	{
+		private readonly GoldenSpiral goldenSpiral = new GoldenSpiral();
+		public override string Name { get; protected set; } = "";
+		public override string Subname { get; protected set; } = "F(x): Golden spiral (Fibonacci)";
+		public override double XMin { get => goldenSpiral.XMin; }
+		public override double XMax { get => goldenSpiral.XMax; }
+		public override PointPair GetValue(double t) => new PointPair(
+			x: t,
+			y: goldenSpiral.GetValue(t).X
+		);
+	}
+	public class TheodorusSpiral : ParametricTestFunction {
 		private const int trianglesNumber = 9;
 		private const int X = 0, Y = 1;
 		private static readonly double[,] cacheXY = new double[trianglesNumber + 1, 2];

@@ -111,7 +111,7 @@ namespace GaussianInterpolationResearch.TestFunctions {
 
 		public override string Name { get; protected set; } = "1 / sqrt(Phi)";
 		public override string Subname { get; protected set; } = "Lituus spiral";
-		public override double XMin { get; protected set; } = 0.5;
+		public override double XMin { get; protected set; } = 0.01;
 		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
 		public override PointPair GetValue(double t) => new PointPair(
 			x: 1 / Math.Sqrt(t) * Math.Cos(t),
@@ -121,7 +121,7 @@ namespace GaussianInterpolationResearch.TestFunctions {
 	public class HyperbolicSpiral : ParametricTestFunction {
 		public override string Name { get; protected set; } = "a / Phi";
 		public override string Subname { get; protected set; } = "Hyperbolic spiral";
-		public override double XMin { get; protected set; } = 0 * Math.PI * numOfTurns;
+		public override double XMin { get; protected set; } = 0.2;
 		public override double XMax { get; protected set; } = 2 * Math.PI * numOfTurns;
 		public override PointPair GetValue(double t)
 		{

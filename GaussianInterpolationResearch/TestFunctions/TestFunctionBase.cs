@@ -119,6 +119,8 @@ namespace GaussianInterpolationResearch.TestFunctions {
 	}
 
 	public class HyperbolicSpiral : ParametricTestFunction {
+		private const double numOfTurns = 3;
+
 		public override string Name { get; protected set; } = "a / Phi";
 		public override string Subname { get; protected set; } = "Hyperbolic spiral";
 		public override double XMin { get; protected set; } = 0.2;
@@ -132,8 +134,6 @@ namespace GaussianInterpolationResearch.TestFunctions {
 						x: 1 / (t + 0.001) * Math.Cos(t),
 						y: 1 / (t + 0.001) * Math.Sin(t));
 		}
-
-		private const double numOfTurns = 3;
 	}
 
 	public class LogarithmicSpiral : ParametricTestFunction	{

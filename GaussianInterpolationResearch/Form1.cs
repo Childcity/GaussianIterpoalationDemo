@@ -22,6 +22,7 @@ namespace GaussianInterpolationResearch
 			new EulerSpiral(), new LogarithmicSpiral(), 
 			new HyperbolicSpiral(), new LituusSpiral(),
 			new FermatsSpiral(), new ArchimedeanSpiral(),
+			new RungePhenomen(),
 			new XInPower2(), new OneByX(), new SqrtX(), new Sqrt3X(),
 			new NaturalLogarithmX(), new Exp0_2X(), new _1_3PowerX(),
 			new SinX(), new ArcSinX(), new ArcTgX(),

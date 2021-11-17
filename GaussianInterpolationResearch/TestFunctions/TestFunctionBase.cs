@@ -264,6 +264,15 @@ namespace GaussianInterpolationResearch.TestFunctions {
 		}
 	}
 
+	public class RungePhenomen : TestFunctionBase {
+		public override string Name { get; protected set; } = "1 / (1 + x * x)";
+		public override string Subname { get; protected set; } = "Runge phenomen";
+		public override double XMin { get; protected set; } = -5;
+		public override double XMax { get; protected set; } = 5;
+		public override PointPair GetValue(double x) => new PointPair(x, 1 / (1 + x * x));
+		// 20 points - 0.52
+	}
+
 	public class XInPower2 : TestFunctionBase {
 		public override string Name { get; protected set; } = "X^2";
 		public override PointPair GetValue(double x) => new PointPair(x, x * x);

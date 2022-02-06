@@ -46,13 +46,14 @@ namespace GaussianInterpolationResearch.Reports
 			try {
 				inputInfo.ToList().ForEach(fucData => {
 					var testFunction = fucData.InterpolationData.TestFunction;
-					var correctPoints = fucData.InterpolationData.GetBasisAndFuncValues()[0].CorrectFuncValuesPoints;
+					var basisPoints = fucData.InterpolationData.GetBasisAndFuncValues()[0].BasisPoints;
+					//var correctPoints = fucData.InterpolationData.GetBasisAndFuncValues()[0].CorrectFuncValuesPoints;
 
 					// Insert title
 					Word.Paragraph oPara;
 					object oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
 					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					oPara.Range.Text = $"Інтерполяція для Y = {testFunction.Name}";
+					oPara.Range.Text = $"Інтерполяція для Y = F({testFunction.Name}) {testFunction.Subname}";
 					oPara.Range.Bold = 1;
 					oPara.Range.Font.Size = 18;
 					oPara.Range.InsertParagraphAfter();
@@ -60,13 +61,13 @@ namespace GaussianInterpolationResearch.Reports
 					// Insert Interval
 					oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;
 					oPara = oDoc.Content.Paragraphs.Add(ref oRng);
-					oPara.Range.Text = $"X є [{testFunction.XMin};{testFunction.XMax:F2}]. К-сть точок = {correctPoints.Count}";
+					oPara.Range.Text = $"X є [{basisPoints.XMin()};{basisPoints.XMax():F2}]. К-сть точок = {basisPoints.Count}";
 					oPara.Range.Bold = 0;
 					oPara.Range.Font.Size = 14;
 					oPara.Range.InsertParagraphAfter();
 
 					string stepForEachBasisPoint = string.Empty;
-					for (int i = 1; i <= correctPoints.Count; i++) {
+					for (int i = 1; i <= basisPoints.Count; i++) {
 						stepForEachBasisPoint += $"{i} = {testFunction.GetStep(i):F2}; ";
 					}
 					oRng = oDoc.Bookmarks.get_Item(ref oEndOfDoc).Range;

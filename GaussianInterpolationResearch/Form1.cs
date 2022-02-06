@@ -252,6 +252,28 @@ namespace GaussianInterpolationResearch
 
 			pane.CurveList.Clear();
 
+				
+			{
+				FunctionInterpolation funcInterpolation = dataInterpolation as FunctionInterpolation;
+				TestFunctionBase testFunction = funcInterpolation?.TestFunction;
+
+				// add basis curve to graphic
+				title = testFunction == null ? "Covid-19 Statistics" : $"Interpolation for y = F({testFunction.Name}) {testFunction.Subname}";
+
+				BasisAndCorrectFuncValues basisAndFuncValues = dataInterpolation.GetBasisAndFuncValues()[0];
+
+				LineItem tmpCurve;
+				tmpCurve = pane.AddCurve($"Main_basis = {(testFunction == null ? "" : testFunction.Name)}", basisAndFuncValues.BasisPoints, Color.Red, SymbolType.TriangleDown);
+				tmpCurve.Symbol.Size = 7;
+				tmpCurve.Symbol.Fill = new Fill(Color.Red);
+				tmpCurve.Line.IsVisible = false;
+
+				tmpCurve = pane.AddCurve($"Middle_basis = {(testFunction == null ? "" : testFunction.Name)}", basisAndFuncValues.CorrectFuncValuesPoints, Color.Green, SymbolType.TriangleDown);
+				tmpCurve.Symbol.Size = 3;
+				tmpCurve.Symbol.Fill = new Fill(Color.Green);
+				tmpCurve.Line.IsVisible = false;
+			}
+
 			var methodInterpolatedPoints = dataInterpolation.BuildInterpolations();
 
 			foreach (var interpolatedPoints in methodInterpolatedPoints) {
@@ -272,27 +294,6 @@ namespace GaussianInterpolationResearch
 					var methodMark = Halper.GetAlgorithmScore(distances);
 					setScore(methodMark, interpolatedPoints.Key);
 				}
-			}
-
-			{
-				FunctionInterpolation funcInterpolation = dataInterpolation as FunctionInterpolation;
-				TestFunctionBase testFunction = funcInterpolation?.TestFunction;
-
-				// add basis curve to graphic
-				title = testFunction == null ? "Covid-19 Statistics" : $"Interpolation for y = F({testFunction.Name}) {testFunction.Subname}";
-
-				BasisAndCorrectFuncValues basisAndFuncValues = dataInterpolation.GetBasisAndFuncValues()[0];
-
-				LineItem tmpCurve;
-				tmpCurve = pane.AddCurve($"Main_basis = {(testFunction == null ? "" : testFunction.Name)}", basisAndFuncValues.BasisPoints, Color.Red, SymbolType.TriangleDown);
-				tmpCurve.Symbol.Size = 7;
-				tmpCurve.Symbol.Fill = new Fill(Color.Red);
-				tmpCurve.Line.IsVisible = false;
-
-				tmpCurve = pane.AddCurve($"Middle_basis = {(testFunction == null ? "" : testFunction.Name)}", basisAndFuncValues.CorrectFuncValuesPoints, Color.Green, SymbolType.TriangleDown);
-				tmpCurve.Symbol.Size = 3;
-				tmpCurve.Symbol.Fill = new Fill(Color.Green);
-				tmpCurve.Line.IsVisible = false;
 			}
 
 			zoomGraphic();
